@@ -1,5 +1,4 @@
-﻿​
-using System;
+﻿using System;
 
 using System.Collections.Generic;
 
@@ -9,15 +8,9 @@ using System.Text;
 
 using System.Threading.Tasks;
 
-
-
 namespace nsFigures
-
 {
-
-    //=========================
-
-    internal class clsFigures
+    internal abstract class clsFigures
 
     {
 
@@ -123,6 +116,8 @@ namespace nsFigures
 
         public string Nom;
 
+        abstract internal void Dessine(); 
+
     }//class clsFigures
 
 
@@ -145,7 +140,7 @@ namespace nsFigures
 
         }
 
-
+        
 
         #region propriété Largeur
 
@@ -183,6 +178,13 @@ namespace nsFigures
 
         }
 
+        internal override void Dessine()
+        {
+            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} L={Largeur} H={Hauteur} \"{Nom}\")");
+
+            //            Console.WriteLine($"    (Angle={Angle:0.0} C={Couleur})");
+        }
+
         #endregion
 
     }//class clsRectangle
@@ -193,31 +195,46 @@ namespace nsFigures
         internal clsCarre(ushort AX, ushort AY, string ANom, ushort ALargeurHauteur)
             : base(AX, AY, ANom)
         {
-
+            LargeurHauteur = ALargeurHauteur;
         }
         public ushort _LargeurHauteur;
 
-        public ushort ALargeurHauteur
+        public ushort LargeurHauteur
         {
             get { return _LargeurHauteur; }
             set { _LargeurHauteur = value; }
 
         }
-    }
 
+        internal override void Dessine()
+        {
+            throw new NotImplementedException();
+        }
+    }
+    
+    internal class clsLigne : clsRectangle
+    {
+        internal clsLigne(ushort AX, ushort AY, string ANom,ushort  ALargeur, ushort AHauteur )
+            :base(AX , AY, ALargeur, AHauteur)
+        {
+            AHauteur = 1; 
+        }
+    }
     internal class clsCube : clsFigures
     {
-        internal clsCube(ushort AX, ushort AY, string ANom, float profondeur)
+        internal clsCube(ushort AX, ushort AY, string ANom, float AProfondeur)
             : base(AX, AY, ANom)
         {
-            profondeur = _profondeur;
+            profondeur = AProfondeur;
         }
         public float _profondeur;
 
         public float profondeur
         {
             get { return _profondeur; }
-            set { _profondeur = value;
+            set
+            {
+                _profondeur = value;
             }
         }
         internal class clsCercle : clsFigures
@@ -235,14 +252,19 @@ namespace nsFigures
                 get { return _Rayon; }
                 set { _Rayon = value; }
             }
+
+            internal override void Dessine()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         internal class clsCylindre : clsCercle
         {
-            internal clsCylindre(ushort AX, ushort AY, string ANom, float ARayon, float profondeur)
+            internal clsCylindre(ushort AX, ushort AY, string ANom, float ARayon, float AProfondeur)
             : base(AX, AY, ANom, ARayon)
             {
-                profondeur = _profondeur;
+                profondeur = AProfondeur;
             }
 
             public float _profondeur;
@@ -254,6 +276,10 @@ namespace nsFigures
             }
         }
 
+        internal override void Dessine()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

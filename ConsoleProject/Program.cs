@@ -135,32 +135,32 @@ namespace ConsoleProject
        
         }
 
-        struct Personne
-        {
+        //struct Personne
+        //{
 
-          public  string Nom;
+        //  public  string Nom;
 
-          public  byte Age;
-          public  float Taille;
+        //  public  byte Age;
+        //  public  float Taille;
 
-            public Adresse Lieu;
+        //    public Adresse Lieu;
 
-        };
+        //};
 
-        struct Adresse
-        {
-            public string adresse1;
-            public string adresse2;
-            public uint codePostal;
-            public string Ville;
-            public byte Etage;
-        }
-        static void valeur(int val)
-        {
-            Console.WriteLine($"Valeur={val}");
-            val = 0;
-            Console.WriteLine($"Valeur={val}");
-        }
+        //struct Adresse
+        //{
+        //    public string adresse1;
+        //    public string adresse2;
+        //    public uint codePostal;
+        //    public string Ville;
+        //    public byte Etage;
+        //}
+        //static void valeur(int val)
+        //{
+        //    Console.WriteLine($"Valeur={val}");
+        //    val = 0;
+        //    Console.WriteLine($"Valeur={val}");
+        //}
 
 
         public static void Formation()
@@ -194,11 +194,11 @@ namespace ConsoleProject
 
             //};
 
-            clsFigures fig2 = new clsFigures(200, 200, "carre");
-            ClsRectangle rectangle = new ClsRectangle(1, 2, 200, 500, "rectangle");
+            //clsFigures fig2 = new clsFigures(200, 200, "carre");
+            //clsRectangle rectangle = new clsRectangle(1, 2, 200, 500, "rectangle");
 
 
-            clsFigures fig3 = new ClsRectangle(900, 20, 1, 2, "recta"); 
+            //clsFigures fig3 = new clsRectangle(900, 20, 1, 2, "recta"); 
 
             
         }
