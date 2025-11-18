@@ -8,6 +8,8 @@ using System.Text;
 
 using System.Threading.Tasks;
 
+using System.Drawing;
+
 namespace nsFigures
 {
     internal abstract class clsFigures
@@ -18,7 +20,7 @@ namespace nsFigures
 
         //-------------------------
 
-        internal clsFigures(ushort AX, ushort AY, string ANom = "")
+        internal clsFigures(Point AX , Point AY,  string ANom = "")
 
         {
 
@@ -40,11 +42,12 @@ namespace nsFigures
 
         // Accesseur
 
-        internal const ushort MAX_X = 800;
+       // internal const ushort MAX_X = 800;
+       // = (value > MAX_X) ? MAX_X : value;
 
-        public ushort _X;
+        public Point _X;
 
-        public ushort X // 0 à 800 pixels
+        public Point X // 0 à 800 pixels
 
         {
 
@@ -60,7 +63,7 @@ namespace nsFigures
 
             {
 
-                _X = (value > MAX_X) ? MAX_X : value;
+                _X = value; 
 
             }
 
@@ -76,15 +79,15 @@ namespace nsFigures
 
         public const ushort MAX_Y = 480;
 
-        private ushort _Y; // Propriété privée qui contient la valeur (0 à 480 pixels)
+        private Point _Y; // Propriété privée qui contient la valeur (0 à 480 pixels)
 
-        public ushort Y // Accesseurs R/W
+        public Point Y // Accesseurs R/W
 
         {
 
             get { return _Y; } // Retour directement la valeur
 
-            set { _Y = (value > MAX_Y) ? MAX_Y : value; } // Test avec plafonnement si besoin
+            set { _Y = value; } // Test avec plafonnement si besoin
 
         }
 
@@ -179,15 +182,15 @@ namespace nsFigures
 
     {
 
-        internal clsRectangle(ushort AX, ushort AY, ushort ALargeur, ushort AHauteur, string ANom = "")
+        internal clsRectangle(Point AX, Point AY, ushort ALargeur, ushort AHauteur, string ANom = "")
 
           : base(AX, AY, ANom)
 
         {
 
-            Largeur = ALargeur;
+            ///Largeur = ALargeur;
 
-            Hauteur = AHauteur;
+      //            Hauteur = AHauteur;
 
         }
 
@@ -205,7 +208,7 @@ namespace nsFigures
 
             get { return _Largeur; } // Retour directement la valeur
 
-            set { _Largeur = (value > MAX_X) ? MAX_X : value; } // Test avec plafonnement si besoin
+            //set { _Largeur = (value > MAX_X) ? MAX_X : value; } // Test avec plafonnement si besoin
 
         }
 
@@ -258,7 +261,7 @@ namespace nsFigures
 
 
 
-            Largeur = (ushort)(Largeur * ACoeffX); // Calcul nouvelle Largeur
+            //Largeur = (ushort)(Largeur * ACoeffX); // Calcul nouvelle Largeur
 
             Hauteur = (ushort)(Hauteur * ACoeffY); // Calcul nouvelle Hauteur
 
@@ -283,7 +286,7 @@ namespace nsFigures
 
     internal class clsCarre : clsFigures
     {
-        internal clsCarre(ushort AX, ushort AY, string ANom, ushort ALargeurHauteur)
+        internal clsCarre(Point AX, Point AY, string ANom, ushort ALargeurHauteur)
             : base(AX, AY, ANom)
         {
             LargeurHauteur = ALargeurHauteur;
@@ -313,7 +316,7 @@ namespace nsFigures
 
     internal class clsLigne : clsRectangle
     {
-        internal clsLigne(ushort AX, ushort AY, string ANom, ushort ALargeur, ushort AHauteur)
+        internal clsLigne(Point AX, Point AY, string ANom, ushort ALargeur, ushort AHauteur)
             : base(AX, AY, ALargeur, AHauteur)
         {
             AHauteur = 1;
@@ -334,7 +337,7 @@ namespace nsFigures
     }
     internal class clsCube : clsFigures
     {
-        internal clsCube(ushort AX, ushort AY, string ANom, ushort AProfondeur)
+        internal clsCube(Point AX, Point AY, string ANom, ushort AProfondeur)
             : base(AX, AY, ANom)
         {
             profondeur = AProfondeur;
@@ -386,7 +389,7 @@ namespace nsFigures
     }
     internal class clsCercle : clsFigures
     {
-        internal clsCercle(ushort AX, ushort AY, string ANom, ushort ARayon)
+        internal clsCercle(Point AX, Point AY, string ANom, ushort ARayon)
             : base(AX, AY, ANom)
         {
             Rayon = ARayon;
@@ -443,7 +446,7 @@ namespace nsFigures
     }
     internal class clsCylindre : clsCercle
     {
-        internal clsCylindre(ushort AX, ushort AY, string ANom, ushort ARayon, ushort AProfondeur)
+        internal clsCylindre(Point AX, Point AY, string ANom, ushort ARayon, ushort AProfondeur)
         : base(AX, AY, ANom, ARayon)
         {
             profondeur = AProfondeur;
@@ -479,7 +482,7 @@ namespace nsFigures
 
 
             profondeur = (ushort)(profondeur * ACoeffX); // Calcul nouvelle Rayon
-
+            Dessine();
         }
 
         public override string ToString()
@@ -498,7 +501,7 @@ namespace nsFigures
 
         #region --- ctor
 
-        internal clsPoint(ushort AX, ushort AY, string ANom = "")
+        internal clsPoint(Point AX, Point AY, string ANom = "")
 
           : base(AX, AY, ANom) // Appel classe Parent (ici = clsFigure)
 
