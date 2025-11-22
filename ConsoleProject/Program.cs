@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 using nsFigures;
  
 namespace ConsoleProject
@@ -179,7 +180,7 @@ namespace ConsoleProject
             int i;
             // var fig = new clsFigures(); 
             // clsFigures fig = new clsFigures(); 
- 
+
             //fig.X = 2;
             //fig.Y = 90;
             //fig.Nom = "carré";
@@ -200,7 +201,63 @@ namespace ConsoleProject
 
             //clsFigures fig3 = new clsRectangle(900, 20, 1, 2, "recta"); 
 
-            
+
+
+            //clsRectangle clsRectangle = new clsRectangle(
+            //    new Point(50, 50),
+            //    new Point(100, 100),
+            //    Color.Aqua,
+            //    10,
+            //    200,
+            //    "Rectangle1"
+
+            //);
+
+
+            //Console.WriteLine($"Avant Zoom : Largeur = {clsRectangle.Largeur}, Hauteur = {clsRectangle.Hauteur}");
+          //  clsRectangle.Zoom(0.5f, 0.5f);
+
+
+
+            clsCube clsCube1 = new clsCube(
+                new Point(50, 50),
+                new Point(100, 100),
+                Color.Yellow,
+                null,
+                 300
+            );
+
+            clsCube clsCube2 = new clsCube(
+              new Point(50, 50),
+              new Point(100, 100),
+              Color.Yellow,
+              null,
+               300
+          );
+            clsCube clsCube3 = new clsCube(
+           new Point(50, 50),
+           new Point(100, 100),
+           Color.Yellow,
+           null,
+            300
+       );
+            //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
+
+
+
+            //  clsCylindre clsCylindre = new clsCylindre(
+            // new Point(50, 50),
+            // new Point(100, 100),
+            // Color.Brown,
+            //"MonCylindre",
+            //  20,
+            //  150);
+            //  clsCylindre.Zoom(0.5f);
+
+            // Toutes les figures sont dans la liste commune
+            clsCube3.Zoom(0.5f, 0.5f);
+
+
         }
         public static void swap(ref int var1,ref int var2)
         {

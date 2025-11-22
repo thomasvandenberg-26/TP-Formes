@@ -1,14 +1,5 @@
-﻿using System;
-
-using System.Collections.Generic;
-
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
-using System.Threading.Tasks;
-
-using System.Drawing;
+﻿using System.Drawing;
+using System.Xml;
 
 namespace nsFigures
 {
@@ -20,7 +11,7 @@ namespace nsFigures
 
         //-------------------------
 
-        internal clsFigures(Point AX , Point AY,  string ANom = "")
+        internal clsFigures(Point AX, Point AY, Color color, string? ANom = null)
 
         {
 
@@ -30,20 +21,34 @@ namespace nsFigures
 
             Angle = 0.0f;
 
-            Nom = ANom ?? string.Empty;
+            Nom = ANom ?? ""; // Assure que _Nom n'est jamais null
 
+            ListeFigures.Add(this);
         }
 
         #endregion
 
+        #region Liste des figures
 
+        // Champ privé
+        public static List<clsFigures> _listeFigures = new List<clsFigures>();
+
+        // Propriété publique
+        public List<clsFigures> ListeFigures
+        {
+            get { return _listeFigures; }
+            set { _listeFigures = value ?? new List<clsFigures>(); }
+        }
+
+
+        #endregion
 
         #region propriété X
 
         // Accesseur
 
-       // internal const ushort MAX_X = 800;
-       // = (value > MAX_X) ? MAX_X : value;
+        // internal const ushort MAX_X = 800;
+        // = (value > MAX_X) ? MAX_X : value;
 
         public Point _X;
 
@@ -97,7 +102,16 @@ namespace nsFigures
 
         #region Angle
 
+        // --- Propriété Couleur
+        public Color _Couleur; // Propriété privée qui contient la valeur de la couleur
+        public Color Couleur // Accesseurs R/W
+        {
+            get { return _Couleur; } // Retour directement la valeur
+            set { _Couleur = value; } // Test avec plafonnement si besoin
+        }
+
         //--- Propriété Angle
+
 
         public const float MAX_ANGLE = 360.0f;
 
@@ -122,13 +136,23 @@ namespace nsFigures
 
         public string _Nom;   // Propriété privée qui contient le Nom de la figure
 
-        public string Nom // Accesseurs Read Only
+        public string Nom // Accesseurs Lecture/Écriture
 
         {
-
+            
             get { return _Nom ?? ""; } // Retour directement la valeur
-            set {  _Nom = value; }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    _Nom = value  ;
+                else
+                {
+                    // Génère un nom par défaut basé sur la liste
+                    int i = ListeFigures.Count + 1;
+                    _Nom = "Figure" + i.ToString();
 
+                }
+            }
         }
 
         #endregion
@@ -161,6 +185,7 @@ namespace nsFigures
             Console.WriteLine($"clsFigure.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
 
             Dessine();// Redessine figure
+            
 
         }
 
@@ -182,16 +207,17 @@ namespace nsFigures
 
     {
 
-        internal clsRectangle(Point AX, Point AY, ushort ALargeur, ushort AHauteur, string ANom = "")
+        internal clsRectangle(Point X, Point Y, Color color, ushort AHauteur, ushort ALargeur, string ANom = "")
 
-          : base(AX, AY, ANom)
+          : base(X, Y, color, ANom)
 
         {
 
-            ///Largeur = ALargeur;
+            Largeur = ALargeur;
 
-      //            Hauteur = AHauteur;
+            Hauteur = AHauteur;
 
+            Couleur = color;
         }
 
 
@@ -208,7 +234,7 @@ namespace nsFigures
 
             get { return _Largeur; } // Retour directement la valeur
 
-            //set { _Largeur = (value > MAX_X) ? MAX_X : value; } // Test avec plafonnement si besoin
+            set { _Largeur = value; } // Test avec plafonnement si besoin;
 
         }
 
@@ -228,13 +254,14 @@ namespace nsFigures
 
             get { return _Hauteur; } // Retour directement la valeur
 
-            set { _Hauteur = (value > MAX_Y) ? MAX_Y : value; } // Test avec plafonnement si besoin
+            set { _Hauteur = value; } // Test avec plafonnement si besoin
 
         }
-
         internal override void Dessine()
         {
-            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} L={Largeur} H={Hauteur} \"{Nom}\")");
+
+            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur} \"{Nom}\")");
+            
 
             //            Console.WriteLine($"    (Angle={Angle:0.0} C={Couleur})");
         }
@@ -261,7 +288,9 @@ namespace nsFigures
 
 
 
-            //Largeur = (ushort)(Largeur * ACoeffX); // Calcul nouvelle Largeur
+            Largeur = (ushort)(Largeur * ACoeffX); // Calcul nouvelle Largeur
+
+            Console.WriteLine($"Largeur après zoom: {Largeur}");
 
             Hauteur = (ushort)(Hauteur * ACoeffY); // Calcul nouvelle Hauteur
 
@@ -275,7 +304,7 @@ namespace nsFigures
 
         {
 
-            return $"Rectangle \"{Nom}\": X={X} Y={Y} L={Largeur} H={Hauteur}";
+            return $"Rectangle \"{Nom}\": X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur}";
 
         }
 
@@ -286,8 +315,8 @@ namespace nsFigures
 
     internal class clsCarre : clsFigures
     {
-        internal clsCarre(Point AX, Point AY, string ANom, ushort ALargeurHauteur)
-            : base(AX, AY, ANom)
+        internal clsCarre(Point AX, Point AY, Color color ,string ANom, ushort ALargeurHauteur)
+            : base(AX, AY, color, ANom)
         {
             LargeurHauteur = ALargeurHauteur;
         }
@@ -302,43 +331,43 @@ namespace nsFigures
 
         internal override void Dessine()
         {
-            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} C={LargeurHauteur} \"{Nom}\")");
+            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
         }
 
         public override string ToString()
 
         {
 
-            return $"Carré \"{Nom}\": X={X} Y={Y} Coté={LargeurHauteur}";
+            return $"Carré \"{Nom}\": X={X} Y={Y} Color={Couleur} Coté={LargeurHauteur}";
 
         }
     }
 
     internal class clsLigne : clsRectangle
     {
-        internal clsLigne(Point AX, Point AY, string ANom, ushort ALargeur, ushort AHauteur)
-            : base(AX, AY, ALargeur, AHauteur)
+        internal clsLigne(Point AX, Point AY,Color color, ushort ALargeur, ushort AHauteur, string ANom)
+            : base(AX, AY, color,ALargeur, AHauteur, ANom)
         {
             AHauteur = 1;
         }
 
         internal override void Dessine()
         {
-            Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} C={Largeur} H={1}");
+            Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
         }
 
         public override string ToString()
 
         {
 
-            return $"Ligne \"{Nom}\": X={X} Y={Y} L={Largeur}";
+            return $"Ligne \"{Nom}\": X={X} Y={Y} Color={Couleur} L={Largeur}";
 
         }
     }
     internal class clsCube : clsFigures
     {
-        internal clsCube(Point AX, Point AY, string ANom, ushort AProfondeur)
-            : base(AX, AY, ANom)
+        internal clsCube(Point AX, Point AY, Color color, string? ANom, ushort AProfondeur)
+            : base(AX, AY, color,ANom)
         {
             profondeur = AProfondeur;
         }
@@ -355,7 +384,8 @@ namespace nsFigures
 
         internal override void Dessine()
         {
-            Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} P={profondeur} ");
+            Console.WriteLine($"-- clsCube.Dessine(X={X} Y={Y} Color={Couleur} P={profondeur} ");
+            Console.WriteLine(ToString()); 
         }
 
         internal override void Zoom(float ACoeffX, float ACoeffY = 1)
@@ -381,7 +411,7 @@ namespace nsFigures
 
         {
 
-            return $"Ligne \"{Nom}\": X={X} Y={Y} L={profondeur}";
+            return $"Cube \"{Nom}\": X={X} Y={Y}  Color={Couleur} L={profondeur}";
 
         }
 
@@ -389,8 +419,8 @@ namespace nsFigures
     }
     internal class clsCercle : clsFigures
     {
-        internal clsCercle(Point AX, Point AY, string ANom, ushort ARayon)
-            : base(AX, AY, ANom)
+        internal clsCercle(Point AX, Point AY, Color color, string ANom, ushort ARayon)
+            : base(AX, AY,color,  ANom)
         {
             Rayon = ARayon;
 
@@ -406,7 +436,7 @@ namespace nsFigures
         internal override void Dessine()
         {
 
-            Console.WriteLine($"--- clsCercle.Dessine(X={X} Y={Y} R={Rayon} \"{Nom}\")");
+            Console.WriteLine($"--- clsCercle.Dessine(X={X} Y={Y} Color={Couleur} R={Rayon} \"{Nom}\")");
 
             //Console.WriteLine($"    (C={Couleur})");
 
@@ -440,14 +470,14 @@ namespace nsFigures
 
         {
 
-            return $"Cercle \"{Nom}\": X={X} Y={Y} R={Rayon}";
+            return $"Cercle \"{Nom}\": X={X} Y={Y} Color={Couleur} R={Rayon}";
 
         }
     }
     internal class clsCylindre : clsCercle
     {
-        internal clsCylindre(Point AX, Point AY, string ANom, ushort ARayon, ushort AProfondeur)
-        : base(AX, AY, ANom, ARayon)
+        internal clsCylindre(Point AX, Point AY,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
+        : base(AX, AY, color, ANom, ARayon)
         {
             profondeur = AProfondeur;
         }
@@ -464,7 +494,7 @@ namespace nsFigures
         internal override void Dessine()
         {
 
-            Console.WriteLine($"--- clsCylindre.Dessine(X={X} Y={Y} R={Rayon} P={profondeur}\"{Nom}\")");
+            Console.WriteLine($"--- clsCylindre.Dessine(X={X} Y={Y} Color={Couleur} R={Rayon} P={profondeur}\"{Nom}\")");
         }
 
         internal override void Zoom(float ACoeffX, float ACoeffY = 1)
@@ -489,7 +519,7 @@ namespace nsFigures
 
         {
 
-            return $"Cercle \"{Nom}\": X={X} Y={Y} R={Rayon} P={profondeur}";
+            return $"Cercle \"{Nom}\": X={X} Y={Y} Color={Couleur} R={Rayon} P={profondeur}";
 
         }
 
@@ -501,9 +531,9 @@ namespace nsFigures
 
         #region --- ctor
 
-        internal clsPoint(Point AX, Point AY, string ANom = "")
+        internal clsPoint(Point AX, Point AY,Color color, string ANom = "")
 
-          : base(AX, AY, ANom) // Appel classe Parent (ici = clsFigure)
+          : base(AX, AY, color, ANom) // Appel classe Parent (ici = clsFigure)
 
         {
 
@@ -540,7 +570,7 @@ namespace nsFigures
 
         {
 
-            Console.WriteLine($"--- clsPoint.Dessine(X={X} Y={Y} \"{Nom}\")");
+            Console.WriteLine($"--- clsPoint.Dessine(X={X} Y={Y} Color={Couleur} \"{Nom}\")");
 
 
 
@@ -588,7 +618,7 @@ namespace nsFigures
 
         {
 
-            return $"Point \"{Nom}\": X={X} Y={Y}";
+            return $"Point \"{Nom}\": X={X} Color={Couleur} Y={Y}";
 
         }
 
