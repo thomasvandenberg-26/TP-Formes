@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using ConsoleProject;
+using System.Drawing;
 using System.Xml;
 
 namespace nsFigures
@@ -260,10 +261,18 @@ namespace nsFigures
         internal override void Dessine()
         {
 
-            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur} \"{Nom}\")");
+            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur} \"{Nom}\")");
             
 
             //            Console.WriteLine($"    (Angle={Angle:0.0} C={Couleur})");
+
+           SupportImprimante_Canon support = new SupportImprimante_Canon();
+
+            _ = support.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            _ = support.Ligne_Trace(X.X, Y.Y, (X.X + Largeur), Y.Y); // Ligne du haut
+            _ = support.Ligne_Trace((X.X + Largeur), Y.Y, (X.X + Largeur), (Y.Y + Hauteur)); // Ligne de droite
+            _ = support.Ligne_Trace((X.X + Largeur), (Y.Y + Hauteur), X.X, (Y.Y + Hauteur)); // Ligne du bas
+            _ = support.Ligne_Trace(X.X, (Y.Y + Hauteur), X.X, Y.Y); // Ligne de gauche
         }
 
         override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
