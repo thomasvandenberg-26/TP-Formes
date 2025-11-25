@@ -163,15 +163,14 @@ namespace nsFigures
 
         //// static: une seule variable pour tous les objets créés (qqes soit le nombre d’objets)
 
-        //static protected nsSupportDessin.ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner
+        static protected ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner
+        static public ISupportDessin? SupportDessin// Accesseurs W
 
-        //static public nsSupportDessin.ISupportDessin? SupportDessin// Accesseurs W
+        {
 
-        //{
+            set { _SupportDessin = value; }
 
-        //    set { _SupportDessin = value; }
-
-        //}
+        }
 
         // #endregion
 
@@ -266,13 +265,27 @@ namespace nsFigures
 
             //            Console.WriteLine($"    (Angle={Angle:0.0} C={Couleur})");
 
-           SupportImprimante_Canon support = new SupportImprimante_Canon();
+            if(_SupportDessin is null)
+            {
+                return;
+            }
 
-            _ = support.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-            _ = support.Ligne_Trace(X.X, Y.Y, (X.X + Largeur), Y.Y); // Ligne du haut
-            _ = support.Ligne_Trace((X.X + Largeur), Y.Y, (X.X + Largeur), (Y.Y + Hauteur)); // Ligne de droite
-            _ = support.Ligne_Trace((X.X + Largeur), (Y.Y + Hauteur), X.X, (Y.Y + Hauteur)); // Ligne du bas
-            _ = support.Ligne_Trace(X.X, (Y.Y + Hauteur), X.X, Y.Y); // Ligne de gauche
+            // D’après ton code tu utilises X.X pour la coordonnée X et Y.Y pour la coordonnée Y
+            int x1 = X.X;
+            int y1 = Y.Y;
+            int x2 = X.X + Largeur;
+            int y2 = Y.Y + Hauteur;
+
+            // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
+            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+
+
+
+           
         }
 
         override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)

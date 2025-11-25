@@ -219,30 +219,33 @@ namespace ConsoleProject
 
 
 
-            clsCube clsCube1 = new clsCube(
-                new Point(50, 50),
-                new Point(100, 100),
-                Color.Yellow,
-                null,
-                 300
-            );
+          //  clsCube clsCube1 = new clsCube(
+          //      new Point(50, 50),
+          //      new Point(100, 100),
+          //      Color.Yellow,
+          //      null,
+          //       300
+          //  );
 
-            clsCube clsCube2 = new clsCube(
-              new Point(50, 50),
-              new Point(100, 100),
-              Color.Yellow,
-              null,
-               300
-          );
-            clsCube clsCube3 = new clsCube(
-           new Point(50, 50),
-           new Point(100, 100),
-           Color.Yellow,
-           null,
-            300
-       );
+          //  clsCube clsCube2 = new clsCube(
+          //    new Point(50, 50),
+          //    new Point(100, 100),
+          //    Color.Yellow,
+          //    null,
+          //     300
+          //);
+          //  clsCube clsCube3 = new clsCube(
+          // new Point(50, 50),
+          // new Point(100, 100),
+          // Color.Yellow,
+          // null,
+          //  300
+       
             //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
 
+            clsFigures.SupportDessin = new SupportImprimante_Canon();
+            clsRectangle r = new clsRectangle(new Point(10, 10), new Point(10, 10), Color.Red, 50, 80, "R1");
+            r.Dessine();
 
 
             //  clsCylindre clsCylindre = new clsCylindre(
@@ -255,7 +258,7 @@ namespace ConsoleProject
             //  clsCylindre.Zoom(0.5f);
 
             // Toutes les figures sont dans la liste commune
-            clsCube3.Zoom(0.5f, 0.5f);
+           // clsCube3.Zoom(0.5f, 0.5f);
 
 
         }
