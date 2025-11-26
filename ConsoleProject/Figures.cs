@@ -268,6 +268,7 @@ namespace nsFigures
                 return;
             }
 
+            Console.WriteLine("ClsRectangle");
             // D’après ton code tu utilises X.X pour la coordonnée X et Y.Y pour la coordonnée Y
             int x1 = depart.X;
             int y1 = depart.Y;
@@ -357,6 +358,7 @@ namespace nsFigures
             int y1 = depart.Y;
             int x2 = depart.X + LargeurHauteur;
             int y2 = depart.Y + LargeurHauteur;
+            Console.WriteLine("ClsCarre");
 
             _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
@@ -395,6 +397,7 @@ namespace nsFigures
             int y1 = depart.Y;
             int x2 = depart.X + Largeur;
             int y2 = depart.Y + 1;
+            Console.WriteLine("clsLigne");
             _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
              
@@ -441,14 +444,15 @@ namespace nsFigures
             int x2 = depart.X + profondeur;
             int y2 = depart.Y + profondeur;
 
+            Console.WriteLine("ClsCube");
             _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
 
-            Console.WriteLine($"-- clsCube.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} P={profondeur} ");
-            Console.WriteLine(ToString()); 
+            //Console.WriteLine($"-- clsCube.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} P={profondeur} ");
+            //Console.WriteLine(ToString()); 
         }
 
         internal override void Zoom(float ACoeffX, float ACoeffY = 1)

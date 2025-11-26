@@ -245,7 +245,7 @@ namespace ConsoleProject
 
             clsFigures.SupportDessin = new SupportImprimante_Canon();
             clsRectangle r = new clsRectangle(new Point(10, 10), Color.Red, 20, 40, "R1");
-            r.Dessine();
+          //  r.Dessine();
 
            // clsCube1.Dessine();
 
@@ -258,7 +258,7 @@ namespace ConsoleProject
            clsLigne clsLigne = new clsLigne( new Point(70, 30),Color.Green, "MaLigne", 20, 30.0f);
 
             clsCercle clsCercle = new clsCercle( new Point(20,30), Color.Purple, "MonCercle", 25);
-            clsCercle.Dessine();
+           // clsCercle.Dessine();
 
             //clsLigne.Dessine();
             //  clsCylindre clsCylindre = new clsCylindre(
@@ -272,7 +272,12 @@ namespace ConsoleProject
 
             // Toutes les figures sont dans la liste commune
             // clsCube3.Zoom(0.5f, 0.5f);
-
+            Dessin dessin1 = new Dessin("Dessin de Thomas", 1.0f);
+            dessin1.Ajouter_Figure(clsCube1);
+            dessin1.Ajouter_Figure(clsCarre);
+            dessin1.Ajouter_Figure(clsLigne);
+            dessin1.Ajouter_Figure(r);
+            dessin1.DessinerFigures();
 
         }
         public static void swap(ref int var1,ref int var2)
