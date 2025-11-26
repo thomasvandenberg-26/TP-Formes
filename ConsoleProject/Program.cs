@@ -215,39 +215,52 @@ namespace ConsoleProject
 
 
             //Console.WriteLine($"Avant Zoom : Largeur = {clsRectangle.Largeur}, Hauteur = {clsRectangle.Hauteur}");
-          //  clsRectangle.Zoom(0.5f, 0.5f);
+            //  clsRectangle.Zoom(0.5f, 0.5f);
 
 
 
-          //  clsCube clsCube1 = new clsCube(
-          //      new Point(50, 50),
-          //      new Point(100, 100),
-          //      Color.Yellow,
-          //      null,
-          //       300
-          //  );
+            clsCube clsCube1 = new clsCube(
+                new Point(10, 50)
+                ,
+                Color.Yellow,
+                null,
+                 20
+            );
 
-          //  clsCube clsCube2 = new clsCube(
-          //    new Point(50, 50),
-          //    new Point(100, 100),
-          //    Color.Yellow,
-          //    null,
-          //     300
-          //);
-          //  clsCube clsCube3 = new clsCube(
-          // new Point(50, 50),
-          // new Point(100, 100),
-          // Color.Yellow,
-          // null,
-          //  300
-       
+            //  clsCube clsCube2 = new clsCube(
+            //    new Point(50, 50),
+            //    new Point(100, 100),
+            //    Color.Yellow,
+            //    null,
+            //     300
+            //);
+            //  clsCube clsCube3 = new clsCube(
+            // new Point(50, 50),
+            // new Point(100, 100),
+            // Color.Yellow,
+            // null,
+            //  300
+
             //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
 
             clsFigures.SupportDessin = new SupportImprimante_Canon();
-            clsRectangle r = new clsRectangle(new Point(10, 10), new Point(10, 10), Color.Red, 50, 80, "R1");
+            clsRectangle r = new clsRectangle(new Point(10, 10), Color.Red, 20, 40, "R1");
             r.Dessine();
 
+           // clsCube1.Dessine();
 
+            clsCarre clsCarre = new clsCarre( new Point(50, 30),
+                Color.Blue,
+                "MonCarre",
+                40);
+
+         //clsCarre.Dessine();
+           clsLigne clsLigne = new clsLigne( new Point(70, 30),Color.Green, "MaLigne", 20, 30.0f);
+
+            clsCercle clsCercle = new clsCercle( new Point(20,30), Color.Purple, "MonCercle", 25);
+            clsCercle.Dessine();
+
+            //clsLigne.Dessine();
             //  clsCylindre clsCylindre = new clsCylindre(
             // new Point(50, 50),
             // new Point(100, 100),
@@ -258,7 +271,7 @@ namespace ConsoleProject
             //  clsCylindre.Zoom(0.5f);
 
             // Toutes les figures sont dans la liste commune
-           // clsCube3.Zoom(0.5f, 0.5f);
+            // clsCube3.Zoom(0.5f, 0.5f);
 
 
         }

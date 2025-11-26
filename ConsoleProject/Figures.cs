@@ -12,13 +12,11 @@ namespace nsFigures
 
         //-------------------------
 
-        internal clsFigures(Point AX, Point AY, Color color, string? ANom = null)
+        internal clsFigures(Point ADepart, Color color, string? ANom = null)
 
         {
 
-            X = AX;
-
-            Y = AY;
+            depart = ADepart;
 
             Angle = 0.0f;
 
@@ -51,9 +49,9 @@ namespace nsFigures
         // internal const ushort MAX_X = 800;
         // = (value > MAX_X) ? MAX_X : value;
 
-        public Point _X;
+        private Point _depart;
 
-        public Point X // 0 à 800 pixels
+        public Point depart// 0 à 800 pixels
 
         {
 
@@ -61,7 +59,7 @@ namespace nsFigures
 
             {
 
-                return _X;
+                return _depart;
 
             }
 
@@ -69,7 +67,7 @@ namespace nsFigures
 
             {
 
-                _X = value; 
+                _depart = value; 
 
             }
 
@@ -193,7 +191,7 @@ namespace nsFigures
 
         {
 
-            return $"Figure \"{Nom}\": X={X} Y={Y}";
+            return $"Figure \"{Nom}\": X={depart.X} Y={depart.Y}";
 
         }
 
@@ -207,9 +205,9 @@ namespace nsFigures
 
     {
 
-        internal clsRectangle(Point X, Point Y, Color color, ushort AHauteur, ushort ALargeur, string ANom = "")
+        internal clsRectangle(Point depart, Color color, ushort AHauteur, ushort ALargeur, string ANom = "")
 
-          : base(X, Y, color, ANom)
+          : base(depart, color, ANom)
 
         {
 
@@ -271,10 +269,10 @@ namespace nsFigures
             }
 
             // D’après ton code tu utilises X.X pour la coordonnée X et Y.Y pour la coordonnée Y
-            int x1 = X.X;
-            int y1 = Y.Y;
-            int x2 = X.X + Largeur;
-            int y2 = Y.Y + Hauteur;
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + Largeur;
+            int y2 = depart.Y + Hauteur;
 
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
             _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
@@ -283,9 +281,6 @@ namespace nsFigures
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
 
-
-
-           
         }
 
         override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
@@ -326,7 +321,7 @@ namespace nsFigures
 
         {
 
-            return $"Rectangle \"{Nom}\": X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur}";
+            return $"Rectangle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} L={Largeur} H={Hauteur}";
 
         }
 
@@ -337,8 +332,8 @@ namespace nsFigures
 
     internal class clsCarre : clsFigures
     {
-        internal clsCarre(Point AX, Point AY, Color color ,string ANom, ushort ALargeurHauteur)
-            : base(AX, AY, color, ANom)
+        internal clsCarre(Point depart, Color color ,string ANom, ushort ALargeurHauteur)
+            : base(depart, color, ANom)
         {
             LargeurHauteur = ALargeurHauteur;
         }
@@ -353,43 +348,71 @@ namespace nsFigures
 
         internal override void Dessine()
         {
-            Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
+            if(_SupportDessin is null)
+            {
+                return;
+            }
+
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + LargeurHauteur;
+            int y2 = depart.Y + LargeurHauteur;
+
+            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
         }
 
         public override string ToString()
 
         {
 
-            return $"Carré \"{Nom}\": X={X} Y={Y} Color={Couleur} Coté={LargeurHauteur}";
+            return $"Carré \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} Coté={LargeurHauteur}";
 
         }
     }
 
     internal class clsLigne : clsRectangle
     {
-        internal clsLigne(Point AX, Point AY,Color color, ushort ALargeur, ushort AHauteur, string ANom)
-            : base(AX, AY, color,ALargeur, AHauteur, ANom)
+        internal clsLigne(Point depart,Color color,string ANom, ushort longueur,   float angle )
+            : base(depart, color, 1, longueur, ANom)
+                  
         {
-            AHauteur = 1;
+           
         }
 
         internal override void Dessine()
         {
-            Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
+
+            if(_SupportDessin is null)
+            {
+                return;
+            }
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + Largeur;
+            int y2 = depart.Y + 1;
+            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
+             
+            //Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
         }
 
         public override string ToString()
 
         {
 
-            return $"Ligne \"{Nom}\": X={X} Y={Y} Color={Couleur} L={Largeur}";
+            return $"Ligne \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} L={Largeur}";
 
         }
     }
     internal class clsCube : clsFigures
     {
-        internal clsCube(Point AX, Point AY, Color color, string? ANom, ushort AProfondeur)
-            : base(AX, AY, color,ANom)
+        internal clsCube(Point depart, Color color, string? ANom, ushort AProfondeur)
+            : base(depart, color,ANom)
         {
             profondeur = AProfondeur;
         }
@@ -406,7 +429,25 @@ namespace nsFigures
 
         internal override void Dessine()
         {
-            Console.WriteLine($"-- clsCube.Dessine(X={X} Y={Y} Color={Couleur} P={profondeur} ");
+
+            if(_SupportDessin is null )
+            {
+               return;
+
+            }
+
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + profondeur;
+            int y2 = depart.Y + profondeur;
+
+            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+
+            Console.WriteLine($"-- clsCube.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} P={profondeur} ");
             Console.WriteLine(ToString()); 
         }
 
@@ -433,7 +474,7 @@ namespace nsFigures
 
         {
 
-            return $"Cube \"{Nom}\": X={X} Y={Y}  Color={Couleur} L={profondeur}";
+            return $"Cube \"{Nom}\": X={depart.X} Y={depart.Y}  Color={Couleur} L={profondeur}";
 
         }
 
@@ -441,8 +482,8 @@ namespace nsFigures
     }
     internal class clsCercle : clsFigures
     {
-        internal clsCercle(Point AX, Point AY, Color color, string ANom, ushort ARayon)
-            : base(AX, AY,color,  ANom)
+        internal clsCercle(Point depart, Color color, string ANom, ushort ARayon)
+            : base(depart,color,  ANom)
         {
             Rayon = ARayon;
 
@@ -456,9 +497,31 @@ namespace nsFigures
         }
 
         internal override void Dessine()
-        {
+        {   
+            if(_SupportDessin is null)
+            {
+                return;
+            }
 
-            Console.WriteLine($"--- clsCercle.Dessine(X={X} Y={Y} Color={Couleur} R={Rayon} \"{Nom}\")");
+            //int xCenter = depart.X;
+            //int yCenter = depart.Y;
+            //int radius = Rayon;
+            //int points = 100; // Nombre de points pour dessiner le cercle
+            //double angleStep = 2 * Math.PI / points;
+            //_ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            //for (int i = 0; i < points; i++)
+            //{
+            //    double angle1 = i * angleStep;
+            //    double angle2 = (i + 1) * angleStep;
+            //    int x1 = xCenter + (int)(radius * Math.Cos(angle1));
+            //    int y1 = yCenter + (int)(radius * Math.Sin(angle1));
+            //    int x2 = xCenter + (int)(radius * Math.Cos(angle2));
+            //    int y2 = yCenter + (int)(radius * Math.Sin(angle2));
+            //    _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2);
+            //}
+
+
+            Console.WriteLine($"--- clsCercle.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} \"{Nom}\")");
 
             //Console.WriteLine($"    (C={Couleur})");
 
@@ -492,14 +555,14 @@ namespace nsFigures
 
         {
 
-            return $"Cercle \"{Nom}\": X={X} Y={Y} Color={Couleur} R={Rayon}";
+            return $"Cercle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon}";
 
         }
     }
     internal class clsCylindre : clsCercle
     {
-        internal clsCylindre(Point AX, Point AY,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
-        : base(AX, AY, color, ANom, ARayon)
+        internal clsCylindre(Point depart,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
+        : base (depart, color, ANom, ARayon)
         {
             profondeur = AProfondeur;
         }
@@ -516,7 +579,7 @@ namespace nsFigures
         internal override void Dessine()
         {
 
-            Console.WriteLine($"--- clsCylindre.Dessine(X={X} Y={Y} Color={Couleur} R={Rayon} P={profondeur}\"{Nom}\")");
+            Console.WriteLine($"--- clsCylindre.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} P={profondeur}\"{Nom}\")");
         }
 
         internal override void Zoom(float ACoeffX, float ACoeffY = 1)
@@ -540,8 +603,8 @@ namespace nsFigures
         public override string ToString()
 
         {
-
-            return $"Cercle \"{Nom}\": X={X} Y={Y} Color={Couleur} R={Rayon} P={profondeur}";
+            
+            return $"Cercle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} P={profondeur}";
 
         }
 
@@ -553,15 +616,15 @@ namespace nsFigures
 
         #region --- ctor
 
-        internal clsPoint(Point AX, Point AY,Color color, string ANom = "")
+        internal clsPoint(Point depart, Color color, string ANom = "")
 
-          : base(AX, AY, color, ANom) // Appel classe Parent (ici = clsFigure)
+          : base( depart, color, ANom) // Appel classe Parent (ici = clsFigure)
 
         {
 
             // Init des propriétés de la classe clsFigure -> base(...)
 
-            Console.WriteLine($"clsPoint.ctor(X={X} Y={Y} \"{Nom}\")");
+            Console.WriteLine($"clsPoint.ctor(X={depart.X} Y={depart.Y} \"{Nom}\")");
 
         }
 
@@ -592,7 +655,7 @@ namespace nsFigures
 
         {
 
-            Console.WriteLine($"--- clsPoint.Dessine(X={X} Y={Y} Color={Couleur} \"{Nom}\")");
+            Console.WriteLine($"--- clsPoint.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} \"{Nom}\")");
 
 
 
@@ -640,7 +703,7 @@ namespace nsFigures
 
         {
 
-            return $"Point \"{Nom}\": X={X} Color={Couleur} Y={Y}";
+            return $"Point \"{Nom}\": X={depart.X} Color={Couleur} Y={Y}";
 
         }
 
