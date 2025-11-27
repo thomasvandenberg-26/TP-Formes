@@ -1,6 +1,6 @@
-﻿using System.Drawing;
+﻿using nsFigures;
+using System.Drawing;
 using System.Runtime.CompilerServices;
-using nsFigures;
  
 namespace ConsoleProject
 {
@@ -8,7 +8,7 @@ namespace ConsoleProject
     {
         static void Main(string[] args)
         {
-            bool majeur = false;
+           // bool majeur = false;
 
             //Console.WriteLine("Quel age as tu ? ");
             //int age = int.Parse(Console.ReadLine());
@@ -177,7 +177,7 @@ namespace ConsoleProject
             //valeur(data);
             //Console.WriteLine($"Valeur={data}"); 
 
-            int i;
+           // int i;
             // var fig = new clsFigures(); 
             // clsFigures fig = new clsFigures(); 
 
@@ -242,15 +242,53 @@ namespace ConsoleProject
             //  300
 
             //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
+            EventService serviceEvents = new EventService();
 
+            Event demarrage = new Event(EventType.Information, "Démarrage de l'application");
+
+            serviceEvents.pushEvent(demarrage);
+
+            Console.WriteLine("--------------- STATISTIQUES EVENTS -----------------");
+            Console.WriteLine($"Informations : {serviceEvents.CountInfo}");
+            Console.WriteLine($"Alertes      : {serviceEvents.CountAlerte}");
+            Console.WriteLine($"Alarmes      : {serviceEvents.CountAlarme}");
+            Console.WriteLine($"Perdus       : {serviceEvents.CountPerdus}");
+            Console.WriteLine("------------------------------------------------------");
             clsFigures.SupportDessin = new SupportImprimante_Canon();
-            clsRectangle r = new clsRectangle(new Point(10, 10), Color.Red, 20, 40, "R1");
-          //  r.Dessine();
+            Dessin? dessin1 = null;
+            try {
+                dessin1.Version = 1.0f; 
+            }
+            
+            catch(Exception ex)
+            {
+                LogEvents.Instance.Push("La creation du dessin n'a pas fonctionné ", LogEvents.TypeEvenement.CREATION_DESSIN, ex, ex.Message);
+            }
 
-           // clsCube1.Dessine();
+            clsRectangle? r = null;
+            try
+            {
+                Color color = Color.FromArgb(300, 300, 300);
+               r = new clsRectangle(new Point(10, 10), color, 20, 40, "R1");
+         
+            }
+            catch(ArgumentException ae)
+            {
+                LogEvents.Instance.Push("La creation d'une couleur n'a pas fonctionné ", LogEvents.TypeEvenement.CREATION_COULEUR, ae, ae.Message);
+                
+            }
+            finally
+            {
+             
+                dessin1.Ajouter_Figure(r);
+            }
+           
+            //  r.Dessine();
 
-            clsCarre clsCarre = new clsCarre( new Point(50, 30),
-                Color.Blue,
+            // clsCube1.Dessine();
+
+            clsCarre clsCarre = new clsCarre(new Point(50, 30),
+                Color.FromArgb(125, 125, 125),
                 "MonCarre",
                 40);
 
@@ -272,11 +310,10 @@ namespace ConsoleProject
 
             // Toutes les figures sont dans la liste commune
             // clsCube3.Zoom(0.5f, 0.5f);
-            Dessin dessin1 = new Dessin("Dessin de Thomas", 1.0f);
+         
             dessin1.Ajouter_Figure(clsCube1);
             dessin1.Ajouter_Figure(clsCarre);
             dessin1.Ajouter_Figure(clsLigne);
-            dessin1.Ajouter_Figure(r);
             dessin1.DessinerFigures();
 
         }
@@ -287,7 +324,7 @@ namespace ConsoleProject
             var2 = var1;
             Console.WriteLine($"Après swap : var1 = {var1}, var2 = {var2}");
         }
-        int i = 13; 
+   
 
      
     }

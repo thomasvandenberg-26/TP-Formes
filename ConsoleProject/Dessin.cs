@@ -19,6 +19,8 @@ namespace ConsoleProject
             Version = AVersion;
             figures = new List<clsFigures>();
 
+      
+            LogEvents.Instance.Push(ANom, LogEvents.TypeEvenement.CREATION_DESSIN);
         }
 
         private string _Nom;
@@ -48,15 +50,39 @@ namespace ConsoleProject
         }
   
         public DateTime Date_Creation { get;}
-     
+
         public void Ajouter_Figure(clsFigures figure)
         {
-           figures.Add(figure);
+           
+                try
+                {
+                    figures.Add(figure);
+                }
+                catch (ArgumentNullException ane)
+                {
+                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, ane.Message);
+                }
+                catch (FormatException fe)
+                {
+                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, fe.Message);
+                }
+
+            catch (Exception ex)
+                {
+                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, ex.Message);
+                }
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE);
+
+            
+        
         }
+
+                
 
         public void Supprimer_Figure(clsFigures figure)
         {
             figures.Remove(figure);
+            LogEvents.Instance.Push(figure.Nom, LogEvents.TypeEvenement.SUPPRESSION_FIGURE);
         }
         public void DessinerFigures()
         {

@@ -1,10 +1,11 @@
 ﻿using ConsoleProject;
 using System.Drawing;
 using System.Xml;
-
+using nsFigures;
+using System.Runtime.InteropServices.JavaScript;
 namespace nsFigures
 {
-    internal abstract class clsFigures
+    public abstract class clsFigures
 
     {
 
@@ -12,9 +13,18 @@ namespace nsFigures
 
         //-------------------------
 
+        // je limite la taille des images à 800x480 pixels
+
+        // à l'aide de constantes
+
+        public const int MAX_X = 800;
+        public const int MAX_Y = 480;
+
+
         internal clsFigures(Point ADepart, Color color, string? ANom = null)
 
         {
+        
 
             depart = ADepart;
 
@@ -22,7 +32,7 @@ namespace nsFigures
 
             Nom = ANom ?? ""; // Assure que _Nom n'est jamais null
 
-            ListeFigures.Add(this);
+
         }
 
         #endregion
@@ -81,8 +91,6 @@ namespace nsFigures
 
         //--- Propriété Y
 
-        public const ushort MAX_Y = 480;
-
         private Point _Y; // Propriété privée qui contient la valeur (0 à 480 pixels)
 
         public Point Y // Accesseurs R/W
@@ -133,6 +141,7 @@ namespace nsFigures
 
         //X159#3
 
+        static int i = 0; 
         public string _Nom;   // Propriété privée qui contient le Nom de la figure
 
         public string Nom // Accesseurs Lecture/Écriture
@@ -147,8 +156,8 @@ namespace nsFigures
                 else
                 {
                     // Génère un nom par défaut basé sur la liste
-                    int i = ListeFigures.Count + 1;
-                    _Nom = "Figure" + i.ToString();
+                    i++;
+                    _Nom = $"Figure{i}";
 
                 }
             }
@@ -259,12 +268,11 @@ namespace nsFigures
         {
 
             //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur} \"{Nom}\")");
-            
-
-            //            Console.WriteLine($"    (Angle={Angle:0.0} C={Couleur})");
+           
 
             if(_SupportDessin is null)
             {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le support de dessin n'est pas défini.");
                 return;
             }
 
@@ -275,8 +283,33 @@ namespace nsFigures
             int x2 = depart.X + Largeur;
             int y2 = depart.Y + Hauteur;
 
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+              
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+                x1 = 0;
+                y1 = 0; 
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                x2 = depart.X + MAX_X; 
+                y2 = depart.Y + MAX_Y;
+            }
+
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
-            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            try { _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B); 
+            }
+         catch(NullReferenceException nre)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                return;
+            }
+ 
+
+
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -297,12 +330,14 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
 
 
 
             if (ACoeffY < 0.0f)
 
                 ACoeffY = 1.0f; // Coeff négatif non accepté
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée.");
 
 
 
@@ -358,9 +393,44 @@ namespace nsFigures
             int y1 = depart.Y;
             int x2 = depart.X + LargeurHauteur;
             int y2 = depart.Y + LargeurHauteur;
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+                x1 = 0;
+                y1 = 0;
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                x2 = depart.X + MAX_X;
+                y2 = depart.Y + MAX_Y;
+            }
+
             Console.WriteLine("ClsCarre");
 
-            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            try
+            {
+                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            }
+            catch (NullReferenceException nre)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                return;
+            }
+            catch (ArgumentException ae)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, ae, "Argument invalide lors de la sélection de la couleur.");
+                return;
+            }
+            catch (FormatException fe)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, fe, "Erreur de format lors de la sélection de la couleur.");
+                return;
+            }
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -397,8 +467,33 @@ namespace nsFigures
             int y1 = depart.Y;
             int x2 = depart.X + Largeur;
             int y2 = depart.Y + 1;
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+                x1 = 0;
+                y1 = 0;
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                x2 = depart.X + MAX_X;
+                y2 = depart.Y + MAX_Y;
+            }
             Console.WriteLine("clsLigne");
-            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            try
+            {
+                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            }
+            catch (NullReferenceException nre)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                return;
+            }
+  
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
              
             //Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
@@ -444,8 +539,34 @@ namespace nsFigures
             int x2 = depart.X + profondeur;
             int y2 = depart.Y + profondeur;
 
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+                x1 = 0;
+                y1 = 0;
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                x2 = depart.X + MAX_X;
+                y2 = depart.Y + MAX_Y;
+            }
             Console.WriteLine("ClsCube");
-            _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            try
+            {
+                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+            }
+            catch (NullReferenceException nre)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                return;
+            }
+        
+ 
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -462,11 +583,16 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+
 
 
             if (ACoeffY < 0.0f)
 
                 ACoeffY = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée.");
+
+
 
 
             profondeur = (ushort)(profondeur * ACoeffX);
@@ -507,23 +633,7 @@ namespace nsFigures
                 return;
             }
 
-            //int xCenter = depart.X;
-            //int yCenter = depart.Y;
-            //int radius = Rayon;
-            //int points = 100; // Nombre de points pour dessiner le cercle
-            //double angleStep = 2 * Math.PI / points;
-            //_ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-            //for (int i = 0; i < points; i++)
-            //{
-            //    double angle1 = i * angleStep;
-            //    double angle2 = (i + 1) * angleStep;
-            //    int x1 = xCenter + (int)(radius * Math.Cos(angle1));
-            //    int y1 = yCenter + (int)(radius * Math.Sin(angle1));
-            //    int x2 = xCenter + (int)(radius * Math.Cos(angle2));
-            //    int y2 = yCenter + (int)(radius * Math.Sin(angle2));
-            //    _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2);
-            //}
-
+ 
 
             Console.WriteLine($"--- clsCercle.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} \"{Nom}\")");
 
@@ -544,7 +654,7 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
-
+            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
 
 
             Rayon = (ushort)(Rayon * ACoeffX); // Calcul nouvelle Rayon
@@ -599,8 +709,24 @@ namespace nsFigures
                 ACoeffX = 1.0f; // Coeff négatif non accepté
 
 
+            if (ACoeffX < 0.0f)
 
-            profondeur = (ushort)(profondeur * ACoeffX); // Calcul nouvelle Rayon
+                ACoeffX = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+
+            try
+            {
+
+                profondeur = (ushort)(profondeur * ACoeffX); // Calcul nouvelle Rayon
+
+            }
+            catch(OverflowException oe)
+            {
+                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, oe, "Débordement lors du calcul de la nouvelle profondeur.");
+                profondeur = ushort.MaxValue; // Définit à la valeur maximale en cas de débordement
+            }
+
+
             Dessine();
         }
 
@@ -660,42 +786,6 @@ namespace nsFigures
         {
 
             Console.WriteLine($"--- clsPoint.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} \"{Nom}\")");
-
-
-
-            //// Si SupportDessin non défini (null), pas de traitement
-
-            //if (_SupportDessin != null)
-
-            //{
-
-            //  _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-
-            //  _ = _SupportDessin.Ligne_Trace(X, Y, X, Y);
-
-            //}
-
-
-
-            // Si SupportDessin null, pas de traitement
-
-            //_ = _SupportDessin?.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-
-            //_ = _SupportDessin?.Ligne_Trace(X, Y, X, Y);
-
-
-
-            //// Si SupportDessin non de type interface ISupportDessin (null ou autre type), pas de traitement
-
-            //if (_SupportDessin is nsSupportDessin.ISupportDessin)
-
-            //{
-
-            //  _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-
-            //  _ = _SupportDessin.Ligne_Trace(X, Y, X, Y);
-
-            //}
 
         }
 
