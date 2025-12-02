@@ -181,6 +181,15 @@ namespace nsFigures
 
         // #endregion
 
+
+        #region EventService 
+        static protected EventService? _EventService;
+         static public EventService EventService
+        {
+            set { _EventService = value; }
+        }
+        #endregion
+
         abstract internal void Dessine();
 
         virtual internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)

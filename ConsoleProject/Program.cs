@@ -198,10 +198,7 @@ namespace ConsoleProject
             //clsFigures fig2 = new clsFigures(200, 200, "carre");
             //clsRectangle rectangle = new clsRectangle(1, 2, 200, 500, "rectangle");
 
-
             //clsFigures fig3 = new clsRectangle(900, 20, 1, 2, "recta"); 
-
-
 
             //clsRectangle clsRectangle = new clsRectangle(
             //    new Point(50, 50),
@@ -213,10 +210,8 @@ namespace ConsoleProject
 
             //);
 
-
             //Console.WriteLine($"Avant Zoom : Largeur = {clsRectangle.Largeur}, Hauteur = {clsRectangle.Hauteur}");
             //  clsRectangle.Zoom(0.5f, 0.5f);
-
 
 
             clsCube clsCube1 = new clsCube(
@@ -243,7 +238,7 @@ namespace ConsoleProject
 
             //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
             EventService serviceEvents = new EventService();
-
+            
             Event demarrage = new Event(EventType.Information, "Démarrage de l'application");
 
             serviceEvents.pushEvent(demarrage);

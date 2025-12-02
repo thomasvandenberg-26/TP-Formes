@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static nsFigures.LogEvents;
 
-namespace ConsoleProject
+namespace nsFigures
 {
     internal class EventService
     {
@@ -55,9 +55,6 @@ namespace ConsoleProject
                         break;
                 }
             }
-
-            string logMessage = $"[{DateTime.Now}] [{e.Type}] Occurrence: {count}";
-            File.AppendAllText("log.txt", logMessage + Environment.NewLine);
         }
     }
 }
