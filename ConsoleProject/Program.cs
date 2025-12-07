@@ -238,17 +238,9 @@ namespace ConsoleProject
 
             //Console.WriteLine("Liste figures taille : {0} ",  clsCube2.ListeFigures.Count.ToString());
             EventService serviceEvents = new EventService();
-            
+            clsFigures.EventService = new EventService();
             Event demarrage = new Event(EventType.Information, "Démarrage de l'application");
-
             serviceEvents.pushEvent(demarrage);
-
-            Console.WriteLine("--------------- STATISTIQUES EVENTS -----------------");
-            Console.WriteLine($"Informations : {serviceEvents.CountInfo}");
-            Console.WriteLine($"Alertes      : {serviceEvents.CountAlerte}");
-            Console.WriteLine($"Alarmes      : {serviceEvents.CountAlarme}");
-            Console.WriteLine($"Perdus       : {serviceEvents.CountPerdus}");
-            Console.WriteLine("------------------------------------------------------");
             clsFigures.SupportDessin = new SupportImprimante_Canon();
             Dessin? dessin1 = null;
             try {
@@ -311,6 +303,9 @@ namespace ConsoleProject
             dessin1.Ajouter_Figure(clsLigne);
             dessin1.DessinerFigures();
 
+
+
+            clsFigures.EventService.ImpressionDict();
         }
         public static void swap(ref int var1,ref int var2)
         {

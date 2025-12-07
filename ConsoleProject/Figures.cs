@@ -183,12 +183,10 @@ namespace nsFigures
 
 
         #region EventService 
-        static protected EventService? _EventService;
-         static public EventService EventService
-        {
-            set { _EventService = value; }
-        }
-        #endregion
+
+        internal static EventService? EventService { get; set; }
+        
+        #endregion        
 
         abstract internal void Dessine();
 
@@ -299,6 +297,8 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
                 x1 = 0;
                 y1 = 0; 
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                clsFigures.EventService.pushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
@@ -306,6 +306,8 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
                 x2 = depart.X + MAX_X; 
                 y2 = depart.Y + MAX_Y;
+                Event depassementX2 = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" dépasse les limites maximales du dessin");
+                clsFigures.EventService.pushEvent(depassementX2);
             }
 
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
@@ -314,16 +316,23 @@ namespace nsFigures
          catch(NullReferenceException nre)
             {
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                Event NullEvent = new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour le rectangle \"{Nom}\".");
+                clsFigures.EventService.pushEvent(NullEvent);
                 return;
             }
- 
-
 
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
 
+
+            Event @event = new Event(EventType.Information, $"Dessin du rectangle \"{Nom}\" effectué.");
+
+            if (@event != null)
+            {
+                clsFigures.EventService.pushEvent(@event);
+            }
         }
 
         override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
@@ -410,6 +419,8 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
                 x1 = 0;
                 y1 = 0;
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                clsFigures.EventService.pushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
@@ -417,6 +428,8 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
                 x2 = depart.X + MAX_X;
                 y2 = depart.Y + MAX_Y;
+                Event Depassement = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                clsFigures.EventService.pushEvent(Depassement);
             }
 
             Console.WriteLine("ClsCarre");
@@ -428,23 +441,28 @@ namespace nsFigures
             catch (NullReferenceException nre)
             {
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour le carré \"{Nom}\"."));
                 return;
             }
             catch (ArgumentException ae)
             {
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, ae, "Argument invalide lors de la sélection de la couleur.");
+                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Argument invalide lors de la sélection de la couleur pour le carré \"{Nom}\"."));
                 return;
             }
             catch (FormatException fe)
             {
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, fe, "Erreur de format lors de la sélection de la couleur.");
+                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Erreur de format lors de la sélection de la couleur pour le carré \"{Nom}\"."));
                 return;
             }
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
-            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
+                                                            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
+
+             clsFigures.EventService.pushEvent(new Event(EventType.Information, $"Dessin du carré \"{Nom}\" effectué."));
         }
 
         public override string ToString()
@@ -484,6 +502,8 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
                 x1 = 0;
                 y1 = 0;
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                clsFigures.EventService.pushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
@@ -491,6 +511,9 @@ namespace nsFigures
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
                 x2 = depart.X + MAX_X;
                 y2 = depart.Y + MAX_Y;
+                Event Depassement = new Event(EventType.Alerte, $"Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                clsFigures.EventService.pushEvent(Depassement);
+
             }
             Console.WriteLine("clsLigne");
             try
@@ -500,11 +523,14 @@ namespace nsFigures
             catch (NullReferenceException nre)
             {
                 LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                Event NullEvent = new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour la ligne \"{Nom}\".");
                 return;
             }
   
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
-             
+
+            clsFigures.EventService.pushEvent(new Event(EventType.Information, $"Dessin de la ligne \"{Nom}\" effectué."));
+
             //Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
         }
 
