@@ -1,19 +1,20 @@
-﻿
-using System.Runtime.InteropServices;
+﻿using System.Timers;
+
+using nsFigures;
 
 namespace nsFigures
 {
-    public sealed class LogEvents
+    public class LogEvents
 
     {
         public static readonly Lazy<LogEvents> _instance = new Lazy<LogEvents>(() => new LogEvents());
 
         public static LogEvents Instance => _instance.Value;
+        internal EventService Service { get; } = new EventService();
 
-        private LogEvents()
-        {
-
-        }
+        private static EventConsumer? _consumers;
+        private static readonly object _lockConsumers = new object();
+        
         public enum TypeEvenement
         {
             CREATION_FIGURE,
@@ -30,6 +31,37 @@ namespace nsFigures
             MINEUR,
             MAJEUR
         }
+
+        private readonly System.Timers.Timer _timer;
+        private LogEvents()
+        {
+            _timer = new System.Timers.Timer(3000); // 3000 ms = 3 secondes
+            _timer.Elapsed += (s, e) => Flush();
+            _timer.AutoReset = true;   // répéter automatiquement
+            _timer.Start();
+        }
+        internal EventConsumer Subscribe
+        {
+            set
+            {
+                lock (_lockConsumers)
+                {
+                    _consumers += value;
+                }
+            }
+        }
+        internal EventConsumer Unsubscribe
+        {
+            set
+            {
+                lock (_lockConsumers)
+                {
+                    _consumers -= value;
+                }
+            }
+        }
+        internal delegate void EventConsumer(Event e);
+
 
         public void Push(string nom, TypeEvenement typeEvenement)
 
@@ -82,8 +114,33 @@ namespace nsFigures
         public void Push(string nom, TypeEvenement typeEvenement, System.OverflowException oe, string DescriptionErreur)
         {
             DateTime now = DateTime.Now;
-        string logMessage = $"[{now}] [Gravité: {events.MAJEUR}] {DescriptionErreur} - Exception: {oe.Message}";
-        System.IO.File.AppendAllText("log.txt", logMessage + Environment.NewLine);
-         }
+            string logMessage = $"[{now}] [Gravité: {events.MAJEUR}] {DescriptionErreur} - Exception: {oe.Message}";
+            System.IO.File.AppendAllText("log.txt", logMessage + Environment.NewLine);
+        }
+
+        public void Flush()
+        {
+           var events = Service.GetAndClearEvents();
+
+            // S’il n’y a rien à traiter, on sort
+            if (events.Count == 0)
+                return;
+
+            EventConsumer? consumersCopy;
+            lock (_lockConsumers)
+            {
+                consumersCopy = _consumers;
+            }
+
+            if (consumersCopy == null)
+                return;
+
+            foreach(var ev in events)
+            {
+                consumersCopy(ev);
+            }
+        }
+
+
     }
 }

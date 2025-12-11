@@ -305,7 +305,6 @@ namespace ConsoleProject
 
 
 
-            clsFigures.EventService.ImpressionDict();
         }
         public static void swap(ref int var1,ref int var2)
         {
