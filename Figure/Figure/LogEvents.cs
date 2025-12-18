@@ -14,7 +14,7 @@ namespace nsFigures
 
         private static EventConsumer? _consumers;
         private static readonly object _lockConsumers = new object();
-        
+
         public enum TypeEvenement
         {
             CREATION_FIGURE,
@@ -40,7 +40,7 @@ namespace nsFigures
             _timer.AutoReset = true;   // répéter automatiquement
             _timer.Start();
         }
-        internal EventConsumer Subscribe
+        public EventConsumer Subscribe
         {
             set
             {
@@ -50,7 +50,7 @@ namespace nsFigures
                 }
             }
         }
-        internal EventConsumer Unsubscribe
+        public EventConsumer Unsubscribe
         {
             set
             {
@@ -60,9 +60,29 @@ namespace nsFigures
                 }
             }
         }
-        internal delegate void EventConsumer(Event e);
+        public delegate void EventConsumer(Event e);
+
+        public static void ConsumerConsole(Event e)
+        {
+            Console.WriteLine(
+                $"[{DateTime.Now:HH:mm:ss}] {e.Type} - {e.Message}"
+            );
+        }
+
+        public static void ConsumerFile(Event e)
+        {
+            string line =
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {e.Type} - {e.Message}";
+
+            File.AppendAllText("EventsLog.txt", line + Environment.NewLine);
+        }
 
 
+
+        public void PushEvent(Event e)
+        {
+            Service.pushEvent(e);
+        }
         public void Push(string nom, TypeEvenement typeEvenement)
 
 
@@ -120,7 +140,7 @@ namespace nsFigures
 
         public void Flush()
         {
-           var events = Service.GetAndClearEvents();
+            var events = Service.GetAndClearEvents();
 
             // S’il n’y a rien à traiter, on sort
             if (events.Count == 0)
@@ -135,12 +155,21 @@ namespace nsFigures
             if (consumersCopy == null)
                 return;
 
-            foreach(var ev in events)
+            foreach (var ev in events)
             {
-                consumersCopy(ev);
+                try
+                {
+                    consumersCopy(ev);
+                }
+                catch (Exception ex)
+                {
+                    // Gérer les exceptions lancées par les consommateurs
+                    Console.WriteLine($"Erreur lors du traitement de l'événement : {ex.Message}");
+                    Service.CountPerdus++;
+                }
             }
+
+
         }
-
-
     }
 }

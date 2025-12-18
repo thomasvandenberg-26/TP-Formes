@@ -184,7 +184,7 @@ namespace nsFigures
 
         #region EventService 
 
-        internal static EventService? EventService { get; set; }
+        public static EventService? EventService { get; set; }
         
         #endregion        
 

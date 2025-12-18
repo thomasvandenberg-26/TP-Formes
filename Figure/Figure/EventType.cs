@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nsFigures
 {
-    internal enum EventType
+    public enum EventType
     {
         Information,
         Alerte,

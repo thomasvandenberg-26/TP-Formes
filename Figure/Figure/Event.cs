@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace nsFigures
 {
   
-        internal class Event
+        public class Event
         {
             public EventType Type { get; }
             public string Message { get; }

@@ -7,18 +7,18 @@ using static nsFigures.LogEvents;
 
 namespace nsFigures
 {
-    internal class EventService
+    public class EventService
     {
 
         private const int MAX_EVENTS = 1000;
 
         private readonly object _lock = new object();
 
-        public int CountInfo { get; private set; }
-        public int CountAlerte { get; private set; }
-        public int CountAlarme { get; private set; }
+        public int CountInfo { get;  set; }
+        public int CountAlerte { get;  set; }
+        public int CountAlarme { get; set; }
 
-        public int CountPerdus { get; private set; }
+        public int CountPerdus { get; set; }
 
         //Taille maximum de la collection d'evenements
         public int TailleMaximumEvents = 1000;
