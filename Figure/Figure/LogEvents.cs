@@ -57,7 +57,7 @@ namespace nsFigures
             string line =
                 $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {e.Type} - {e.Message}";
 
-            File.AppendAllText("EventsLog.txt", line + Environment.NewLine);
+            File.AppendAllText("ThomasLog.txt", line + Environment.NewLine);
         }
 
 

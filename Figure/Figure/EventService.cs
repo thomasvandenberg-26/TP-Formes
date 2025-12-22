@@ -71,15 +71,6 @@ namespace nsFigures
             }
         }
         // A la fin du processus j'imprime dans un fichier text le contenu du dictionnaire
-        public void ImpressionCompteParTypeEvenement()
-        {
-            String logMessage = $"Evenement d'information : {CountInfo}" +
-                $" \n Evenement Alerte : {CountAlerte} " +
-                $"\n Evenement Alarme : {CountAlarme} " +
-                $"\n Evenement Perdus : {CountPerdus} " ;
-            File.WriteAllText("DictLog.txt", logMessage + Environment.NewLine);
-        }
-
 
     }
 }

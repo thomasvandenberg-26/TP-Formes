@@ -9,31 +9,47 @@ namespace ConsoleProject
 {
     internal class SupportImprimante_Canon : ISupportDessin
     {
+        private readonly string _filePath;
+        private byte _r, _g, _b;
+
         public int Cercle_Trace(int AX_Centre, int AY_Centre, int ARayon)
         {
             throw new NotImplementedException();
         }
+        public SupportImprimante_Canon(string filePath = "Dessin_CANON.txt")
+        {
+            _filePath = filePath;
 
+            // On démarre un nouveau "document"
+            File.WriteAllText(
+                _filePath,
+                $"--- Impression Canon ({DateTime.Now}) ---{Environment.NewLine}"
+            );
+        }
         public int Couleur_Selectionne(byte ARouge, byte AVert, byte ABleu)
         {
             // Combine les valeurs de couleur en un entier
+
+
+            _r = ARouge; _g = AVert; _b = ABleu;
+
+            File.AppendAllText(
+                _filePath,
+                $"[CANON] Couleur rgb({_r},{_g},{_b}){Environment.NewLine}"
+            );
+
             return ARouge << 16 | AVert << 8 | ABleu;
         }
 
         public int Ligne_Trace(int AX_Debut, int AY_Debut, int AX_Fin, int AY_Fin)
         {
-            // Calculer la différence entre les coordonnées
-            int deltaX = AX_Fin - AX_Debut;
-            int deltaY = AY_Fin - AY_Debut;
+            File.AppendAllText(
+                _filePath,
+                $"[CANON] Ligne ({AX_Debut},{AY_Debut}) -> ({AX_Fin},{AY_Fin}) " 
+            );
 
-            LogEvents.Instance.PushEvent(new Event(EventType.Information,
-               $"Tracé d'une ligne de ({AX_Debut}, {AY_Debut}) à ({AX_Fin}, {AY_Fin})"));
-
-
-            // Logique pour tracer la ligne (simulation)
-            // Ici, vous pouvez ajouter le code pour dessiner la ligne sur un support graphique
-            Console.WriteLine($"Tracé d'une ligne de ({AX_Debut}, {AY_Debut}) à ({AX_Fin}, {AY_Fin})");
-            return 1;  // Retourner la longueur de la ligne tracée
+            return 1;
         }
+
     }
 }
