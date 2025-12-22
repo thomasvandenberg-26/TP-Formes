@@ -15,23 +15,6 @@ namespace nsFigures
         private static EventConsumer? _consumers;
         private static readonly object _lockConsumers = new object();
 
-        public enum TypeEvenement
-        {
-            CREATION_FIGURE,
-            CREATION_DESSIN,
-            CREATION_COULEUR,
-            SUPPRESSION_FIGURE,
-            DESSIN_FIGURE,
-            DESSIN_LISTE_FIGURE
-
-        }
-        public enum events
-        {
-            NOTIFICATIONS,
-            MINEUR,
-            MAJEUR
-        }
-
         private readonly System.Timers.Timer _timer;
         private LogEvents()
         {
