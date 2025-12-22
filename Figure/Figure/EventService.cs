@@ -7,7 +7,7 @@ using static nsFigures.LogEvents;
 
 namespace nsFigures
 {
-    public class EventService
+    internal class EventService
     {
 
         private const int MAX_EVENTS = 1000;
@@ -23,52 +23,47 @@ namespace nsFigures
         //Taille maximum de la collection d'evenements
         public int TailleMaximumEvents = 1000;
         // Collection d'evenements
-        public List<Event> Events = new List<Event>();  
+        public Queue< Event> _events = new Queue<Event>();  
 
         // J'ajoute l'evenement dans la collection _events
 
 
         public List<Event> GetAndClearEvents()
         {
-            List<Event> eventsCopy;
+           
 
             lock (_lock)
             {
-                eventsCopy = new List<Event>(Events);
-                Events.Clear();
+              var copy = _events.ToList();
+                _events.Clear();
+                return copy;
             }
-            return eventsCopy;
+          
         }
         public void pushEvent(Event e)
         {
             lock (_lock)
             {
                
-
+                _events.Enqueue(e);
                 // Suppresion des anciens evenements si la taille du dictionnaire depasse 1000
 
-                if (Events.Count >= 1000)
-                {
-                    Events.RemoveRange(0, 800);
-                    CountPerdus += 800;
+                if (_events.Count >= MAX_EVENTS)
+                { 
+                     _events.Dequeue();
+                    CountPerdus++;
                 }
                 switch (e.Type)
 
-
-                {
-                    // j'ajoute dans mon dictionnaire le type d'evenement et le nombre d'evenements de ce type
-
-                    
+                { 
                     case EventType.Information:
-                        Events.Add(e);
                         CountInfo++;
                         break;
                     case EventType.Alerte:
-                        Events.Add(e);
+                       
                         CountAlerte++;
                         break;
                     case EventType.Alarme:
-                        Events.Add(e);
                         CountAlarme++;
                         break;
                 }

@@ -20,7 +20,7 @@ namespace nsFigures
             figures = new List<clsFigures>();
 
       
-            LogEvents.Instance.Push(ANom, LogEvents.TypeEvenement.CREATION_DESSIN);
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Un dessin {Nom} a été crée"));
         }
 
         private string _Nom;
@@ -57,30 +57,30 @@ namespace nsFigures
                 try
                 {
                 figures.Add(figure);
-                    LogEvents.Instance.Push(figure.Nom, LogEvents.TypeEvenement.CREATION_FIGURE);
-                clsFigures.EventService.pushEvent(new Event(EventType.Information, $"Figure : {figure.Nom} ajouté au dessin"));
+    
+                    LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Figure : {figure.Nom} ajouté au dessin"));
                 
                 return;
 
             }
                 catch (ArgumentNullException ane)
                 {
-                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, ane.Message);
-                    clsFigures.EventService.pushEvent(new Event(EventType.Alarme, $"Erreur lors de l'ajout de la figure au dessin : {ane.Message}"));
+        
+                    LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur lors de l'ajout de la figure au dessin : {ane.Message}"));
             
                 }
                 catch (FormatException fe)
                 {
-                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, fe.Message);
-                    clsFigures.EventService.pushEvent(new Event(EventType.Alarme, $"Erreur de format lors de l'ajout de la figure au dessin : {fe.Message}"));
+                 
+                    LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur de format lors de l'ajout de la figure au dessin : {fe.Message}"));
             }
 
             catch (Exception ex)
                 {
-                    LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE, ex.Message);
-                    clsFigures.EventService.pushEvent(new Event(EventType.Alarme, $"Erreur inconnue lors de l'ajout de la figure au dessin : {ex.Message}"));
+            
+                    LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur inconnue lors de l'ajout de la figure au dessin : {ex.Message}"));
                  }
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.CREATION_FIGURE);
+           
 
             
         
@@ -93,12 +93,12 @@ namespace nsFigures
             figures.Remove(figure);
             try
             {
-                LogEvents.Instance.Push(figure.Nom, LogEvents.TypeEvenement.SUPPRESSION_FIGURE);
+               
             }
             catch (Exception ex)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.SUPPRESSION_FIGURE, ex.Message);
-                clsFigures.EventService.pushEvent(new Event(EventType.Alarme, $"Erreur inconnue lors de la suppression de la figure du dessin : {ex.Message}"));
+            
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur inconnue lors de la suppression de la figure du dessin : {ex.Message}"));
             }
         }
         public void DessinerFigures()

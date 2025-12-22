@@ -182,12 +182,6 @@ namespace nsFigures
         // #endregion
 
 
-        #region EventService 
-
-        public static EventService? EventService { get; set; }
-        
-        #endregion        
-
         abstract internal void Dessine();
 
         virtual internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
@@ -279,7 +273,7 @@ namespace nsFigures
 
             if(_SupportDessin is null)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le support de dessin n'est pas défini.");
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, "Le support de dessin n'est pas défini."));
                 return;
             }
 
@@ -294,20 +288,20 @@ namespace nsFigures
             if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
             {
               
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+       
                 x1 = 0;
                 y1 = 0; 
                 Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
-                clsFigures.EventService.pushEvent(DebutNonAtteint);
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+               
                 x2 = depart.X + MAX_X; 
                 y2 = depart.Y + MAX_Y;
                 Event depassementX2 = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" dépasse les limites maximales du dessin");
-                clsFigures.EventService.pushEvent(depassementX2);
+                LogEvents.Instance.PushEvent(depassementX2);
             }
 
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
@@ -315,9 +309,9 @@ namespace nsFigures
             }
          catch(NullReferenceException nre)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
-                Event NullEvent = new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour le rectangle \"{Nom}\".");
-                clsFigures.EventService.pushEvent(NullEvent);
+                Event NullEvent = new Event(EventType.Alerte, $"Exception : {nre.Message} \"{Nom}\".");
+                LogEvents.Instance.PushEvent(NullEvent);
+                
                 return;
             }
 
@@ -331,7 +325,7 @@ namespace nsFigures
 
             if (@event != null)
             {
-                clsFigures.EventService.pushEvent(@event);
+                LogEvents.Instance.PushEvent(@event);
             }
         }
 
@@ -348,14 +342,14 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.")); ;
 
 
 
             if (ACoeffY < 0.0f)
 
                 ACoeffY = 1.0f; // Coeff négatif non accepté
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée.");
+                 LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée."));
 
 
 
@@ -416,44 +410,41 @@ namespace nsFigures
             if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
             {
 
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
                 x1 = 0;
                 y1 = 0;
                 Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
-                clsFigures.EventService.pushEvent(DebutNonAtteint);
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
                 x2 = depart.X + MAX_X;
                 y2 = depart.Y + MAX_Y;
-                Event Depassement = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
-                clsFigures.EventService.pushEvent(Depassement);
+                Event Depassement = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" a dépassé les limites du cadre");
+                LogEvents.Instance.PushEvent(Depassement);
             }
 
             Console.WriteLine("ClsCarre");
-
+           
             try
             {
                 _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
             }
             catch (NullReferenceException nre)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
-                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour le carré \"{Nom}\"."));
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {nre.Message}  \"{Nom}\"."));
                 return;
             }
             catch (ArgumentException ae)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, ae, "Argument invalide lors de la sélection de la couleur.");
-                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Argument invalide lors de la sélection de la couleur pour le carré \"{Nom}\"."));
+               
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {ae.Message}\"{Nom}\"."));
                 return;
             }
             catch (FormatException fe)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, fe, "Erreur de format lors de la sélection de la couleur.");
-                clsFigures.EventService.pushEvent(new Event(EventType.Alerte, $"Erreur de format lors de la sélection de la couleur pour le carré \"{Nom}\"."));
+
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {fe.Message} \"{Nom}\"."));
                 return;
             }
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
@@ -462,7 +453,7 @@ namespace nsFigures
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
                                                             //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
 
-             clsFigures.EventService.pushEvent(new Event(EventType.Information, $"Dessin du carré \"{Nom}\" effectué."));
+             LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Dessin du carré \"{Nom}\" effectué."));
         }
 
         public override string ToString()
@@ -499,20 +490,19 @@ namespace nsFigures
             if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
             {
 
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
                 x1 = 0;
                 y1 = 0;
                 Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
-                clsFigures.EventService.pushEvent(DebutNonAtteint);
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+               
                 x2 = depart.X + MAX_X;
                 y2 = depart.Y + MAX_Y;
                 Event Depassement = new Event(EventType.Alerte, $"Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
-                clsFigures.EventService.pushEvent(Depassement);
+                LogEvents.Instance.PushEvent(Depassement);
 
             }
             Console.WriteLine("clsLigne");
@@ -522,14 +512,14 @@ namespace nsFigures
             }
             catch (NullReferenceException nre)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
-                Event NullEvent = new Event(EventType.Alerte, $"Le support de dessin n'est pas initialisé pour la ligne \"{Nom}\".");
+       
+                Event NullEvent = new Event(EventType.Alerte, $"{nre.Message} \"{Nom}\".");
                 return;
             }
   
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
 
-            clsFigures.EventService.pushEvent(new Event(EventType.Information, $"Dessin de la ligne \"{Nom}\" effectué."));
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, $" \"{Nom}\" effectué."));
 
             //Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
         }
@@ -579,14 +569,14 @@ namespace nsFigures
             if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
             {
 
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Changement pour une valeur Min 0");
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, "Changement pour une valeur Min 0"));
                 x1 = 0;
                 y1 = 0;
             }
 
             if (x2 > MAX_X || y2 > MAX_Y)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480"));
                 x2 = depart.X + MAX_X;
                 y2 = depart.Y + MAX_Y;
             }
@@ -597,7 +587,7 @@ namespace nsFigures
             }
             catch (NullReferenceException nre)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, nre, "Le support n'est pas initialisé.");
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"{nre.Message}{Nom}"));
                 return;
             }
         
@@ -618,14 +608,14 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée."));
 
 
 
             if (ACoeffY < 0.0f)
 
                 ACoeffY = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée.");
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée."));
 
 
 
@@ -689,7 +679,7 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+            LogEvents.Instance.PushEvent(new Event( EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée."));
 
 
             Rayon = (ushort)(Rayon * ACoeffX); // Calcul nouvelle Rayon
@@ -747,7 +737,7 @@ namespace nsFigures
             if (ACoeffX < 0.0f)
 
                 ACoeffX = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.");
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.")); ;
 
             try
             {
@@ -757,7 +747,7 @@ namespace nsFigures
             }
             catch(OverflowException oe)
             {
-                LogEvents.Instance.Push(Nom, LogEvents.TypeEvenement.DESSIN_FIGURE, oe, "Débordement lors du calcul de la nouvelle profondeur.");
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"{oe.Message} - {Nom}"));
                 profondeur = ushort.MaxValue; // Définit à la valeur maximale en cas de débordement
             }
 

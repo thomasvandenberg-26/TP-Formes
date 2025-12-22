@@ -26,8 +26,8 @@ namespace ConsoleProject
             int deltaX = AX_Fin - AX_Debut;
             int deltaY = AY_Fin - AY_Debut;
 
-            LogEvents.Instance.Push(
-               $"Tracé d'une ligne de ({AX_Debut}, {AY_Debut}) à ({AX_Fin}, {AY_Fin})", LogEvents.TypeEvenement.DESSIN_FIGURE);
+            LogEvents.Instance.PushEvent(new Event(EventType.Information,
+               $"Tracé d'une ligne de ({AX_Debut}, {AY_Debut}) à ({AX_Fin}, {AY_Fin})"));
 
 
             // Logique pour tracer la ligne (simulation)

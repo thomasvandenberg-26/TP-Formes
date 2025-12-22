@@ -78,5 +78,7 @@ class Program
         Console.WriteLine("Ouvre 'EventsLog_TEST.txt' pour vérifier les lignes écrites.");
         Console.WriteLine("Appuie sur Entrée pour quitter.");
         Console.ReadLine();
+
+       
     }
 }
