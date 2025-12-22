@@ -597,8 +597,12 @@ namespace nsFigures
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
 
-            //Console.WriteLine($"-- clsCube.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} P={profondeur} ");
-            //Console.WriteLine(ToString()); 
+            Event @event = new Event(EventType.Information, $"Dessin du cube \"{Nom}\" effectué.");
+
+            if (@event != null)
+            {
+                LogEvents.Instance.PushEvent(@event);
+            }
         }
 
         internal override void Zoom(float ACoeffX, float ACoeffY = 1)
