@@ -12,6 +12,15 @@ namespace ConsoleProject
         private readonly string _filePath;
         private byte _r, _g, _b;
 
+        internal void DebutFigure(string type, string nom)
+        {
+            File.AppendAllText(
+                _filePath,
+                $"{Environment.NewLine}[FIGURE] {type} \"{nom}\"{Environment.NewLine}"
+            );
+        }
+
+
         public int Cercle_Trace(int AX_Centre, int AY_Centre, int ARayon)
         {
             throw new NotImplementedException();
@@ -34,9 +43,10 @@ namespace ConsoleProject
             _r = ARouge; _g = AVert; _b = ABleu;
 
             File.AppendAllText(
-                _filePath,
-                $"[CANON] Couleur rgb({_r},{_g},{_b}){Environment.NewLine}"
-            );
+               _filePath,
+               $"[CANON] Couleur rgb({_r},{_g},{_b}){Environment.NewLine}"
+           );
+
 
             return ARouge << 16 | AVert << 8 | ABleu;
         }
@@ -44,9 +54,10 @@ namespace ConsoleProject
         public int Ligne_Trace(int AX_Debut, int AY_Debut, int AX_Fin, int AY_Fin)
         {
             File.AppendAllText(
-                _filePath,
-                $"[CANON] Ligne ({AX_Debut},{AY_Debut}) -> ({AX_Fin},{AY_Fin}) " 
+             _filePath,
+             $"[CANON] Ligne ({AX_Debut},{AY_Debut}) -> ({AX_Fin},{AY_Fin}){Environment.NewLine}"
             );
+
 
             return 1;
         }

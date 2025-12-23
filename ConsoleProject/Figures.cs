@@ -277,6 +277,11 @@ namespace nsFigures
                 return;
             }
 
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Rectangle", Nom);
+            }
+
             Console.WriteLine("ClsRectangle");
             // D’après ton code tu utilises X.X pour la coordonnée X et Y.Y pour la coordonnée Y
             int x1 = depart.X;
@@ -298,35 +303,21 @@ namespace nsFigures
             if (x2 > MAX_X || y2 > MAX_Y)
             {
                
-                x2 = depart.X + MAX_X; 
-                y2 = depart.Y + MAX_Y;
+                x2 = MAX_X; 
+                y2 = MAX_Y;
                 Event depassementX2 = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" dépasse les limites maximales du dessin");
                 LogEvents.Instance.PushEvent(depassementX2);
             }
 
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
-            try { _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B); 
-            }
-         catch(NullReferenceException nre)
-            {
-                Event NullEvent = new Event(EventType.Alerte, $"Exception : {nre.Message} \"{Nom}\".");
-                LogEvents.Instance.PushEvent(NullEvent);
-                
-                return;
-            }
 
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
             _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
-
-
-            Event @event = new Event(EventType.Information, $"Dessin du rectangle \"{Nom}\" effectué.");
-
-            if (@event != null)
-            {
-                LogEvents.Instance.PushEvent(@event);
-            }
+  
+          LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Dessin du rectangle \"{Nom}\" effectué."));
+           
         }
 
         override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
@@ -401,6 +392,11 @@ namespace nsFigures
                 return;
             }
 
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Carre", Nom);
+            }
+
             int x1 = depart.X;
             int y1 = depart.Y;
             int x2 = depart.X + LargeurHauteur;
@@ -418,8 +414,8 @@ namespace nsFigures
 
             if (x2 > MAX_X || y2 > MAX_Y)
             {
-                x2 = depart.X + MAX_X;
-                y2 = depart.Y + MAX_Y;
+                x2 = MAX_X;
+                y2 = MAX_Y;
                 Event Depassement = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" a dépassé les limites du cadre");
                 LogEvents.Instance.PushEvent(Depassement);
             }
@@ -430,11 +426,7 @@ namespace nsFigures
             {
                 _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
             }
-            catch (NullReferenceException nre)
-            {
-                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {nre.Message}  \"{Nom}\"."));
-                return;
-            }
+          
             catch (ArgumentException ae)
             {
                
@@ -481,6 +473,11 @@ namespace nsFigures
             {
                 return;
             }
+
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Ligne", Nom);
+            }
             int x1 = depart.X;
             int y1 = depart.Y;
             int x2 = depart.X + Largeur;
@@ -499,24 +496,16 @@ namespace nsFigures
             if (x2 > MAX_X || y2 > MAX_Y)
             {
                
-                x2 = depart.X + MAX_X;
-                y2 = depart.Y + MAX_Y;
+                x2 = MAX_X;
+                y2 = MAX_Y;
                 Event Depassement = new Event(EventType.Alerte, $"Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
                 LogEvents.Instance.PushEvent(Depassement);
 
             }
             Console.WriteLine("clsLigne");
-            try
-            {
+            
                 _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-            }
-            catch (NullReferenceException nre)
-            {
-       
-                Event NullEvent = new Event(EventType.Alerte, $"{nre.Message} \"{Nom}\".");
-                return;
-            }
-  
+          
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
 
             LogEvents.Instance.PushEvent(new Event(EventType.Information, $" \"{Nom}\" effectué."));
@@ -558,7 +547,10 @@ namespace nsFigures
                return;
 
             }
-
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Cube", Nom);
+            }
             int x1 = depart.X;
             int y1 = depart.Y;
             int x2 = depart.X + profondeur;
@@ -577,21 +569,11 @@ namespace nsFigures
             if (x2 > MAX_X || y2 > MAX_Y)
             {
                 LogEvents.Instance.PushEvent(new Event(EventType.Alerte, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480"));
-                x2 = depart.X + MAX_X;
-                y2 = depart.Y + MAX_Y;
+                x2 = MAX_X;
+                y2 = MAX_Y;
             }
             Console.WriteLine("ClsCube");
-            try
-            {
-                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
-            }
-            catch (NullReferenceException nre)
-            {
-                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"{nre.Message}{Nom}"));
-                return;
-            }
         
- 
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -661,8 +643,11 @@ namespace nsFigures
             {
                 return;
             }
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Cube", Nom);
+            }
 
- 
 
             Console.WriteLine($"--- clsCercle.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} \"{Nom}\")");
 

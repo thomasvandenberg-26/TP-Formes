@@ -10,7 +10,7 @@ namespace ConsoleProject
     {
 
         int Couleur_Selectionne(byte ARouge, byte AVert, byte ABleu);
-        int Ligne_Trace(int AX_Debut, int AY_Debut, int AX_Fin, int AY_Fin);
+        int Ligne_Trace( int AX_Debut, int AY_Debut, int AX_Fin, int AY_Fin);
 
         int Cercle_Trace(int AX_Centre, int AY_Centre, int ARayon);
     }
