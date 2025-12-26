@@ -8,4 +8,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Formes">
+      <HintPath>..\..\ConsoleProject\bin\Debug\net9.0\Formes.dll</HintPath>
+    </Reference>
+    <Reference Include="Service">
+      <HintPath>..\..\ConsoleProject\bin\Debug\net9.0\Service.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
