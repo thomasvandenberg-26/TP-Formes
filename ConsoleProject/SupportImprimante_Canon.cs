@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace ConsoleProject
 {
     internal class SupportImprimante_Canon : ISupportDessin
     {
         private readonly string _filePath;
-        private byte _r, _g, _b;
-
+      
         internal void DebutFigure(string type, string nom)
         {
             File.AppendAllText(
@@ -35,20 +35,20 @@ namespace ConsoleProject
                 $"--- Impression Canon ({DateTime.Now}) ---{Environment.NewLine}"
             );
         }
-        public int Couleur_Selectionne(byte ARouge, byte AVert, byte ABleu)
+        public int Couleur_Selectionne(Color color)
         {
             // Combine les valeurs de couleur en un entier
 
 
-            _r = ARouge; _g = AVert; _b = ABleu;
+           
 
             File.AppendAllText(
                _filePath,
-               $"[CANON] Couleur rgb({_r},{_g},{_b}){Environment.NewLine}"
+               $"[CANON] Couleur : {color.Name} , {Environment.NewLine}"
            );
 
 
-            return ARouge << 16 | AVert << 8 | ABleu;
+            return 1;
         }
 
         public int Ligne_Trace(int AX_Debut, int AY_Debut, int AX_Fin, int AY_Fin)

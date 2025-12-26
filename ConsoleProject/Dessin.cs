@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace nsFigures
 {
-    internal class Dessin
+    public class Dessin
     {
 
         private List<clsFigures> figures;
-        public Dessin(string ANom, float AVersion)
+        public Dessin(string? ANom, float AVersion)
         {
 
             Nom = ANom;
@@ -23,19 +23,23 @@ namespace nsFigures
             LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Un dessin {Nom} a été crée"));
         }
 
-        private string _Nom;
+        private string? _Nom;
 
-        public string Nom // Accesseurs R/W
+        public string? Nom // Accesseurs R/W
 
         {
 
             get { return _Nom; } // Retour directement la valeur
 
-            set { _Nom = value; } // Test avec plafonnement si besoin;
 
+            set { if (!string.IsNullOrEmpty(value))
+                { _Nom = value; } else
+                {
+                    _Nom = "Dessin_Sans_Nom";
+                }// Test avec plafonnement si besoin;
+
+            }
         }
-
-        private DateTime _Date;
 
         private float _Version;
 

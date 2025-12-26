@@ -142,7 +142,7 @@ namespace nsFigures
         //X159#3
 
         static int i = 0; 
-        public string _Nom;   // Propriété privée qui contient le Nom de la figure
+        public string? _Nom;   // Propriété privée qui contient le Nom de la figure
 
         public string Nom // Accesseurs Lecture/Écriture
 
@@ -211,13 +211,13 @@ namespace nsFigures
 
     //=========================
 
-    internal class clsRectangle : clsFigures
+    public class clsRectangle : clsFigures
 
     {
 
-        internal clsRectangle(Point depart, Color color, ushort AHauteur, ushort ALargeur, string ANom = "")
+        public clsRectangle(Point depart, Color AColor, ushort AHauteur, ushort ALargeur, string ANom = "")
 
-          : base(depart, color, ANom)
+          : base(depart, AColor, ANom)
 
         {
 
@@ -225,7 +225,7 @@ namespace nsFigures
 
             Hauteur = AHauteur;
 
-            Couleur = color;
+            CColor= AColor;
         }
 
 
@@ -265,6 +265,11 @@ namespace nsFigures
             set { _Hauteur = value; } // Test avec plafonnement si besoin
 
         }
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }   
         internal override void Dessine()
         {
 
@@ -310,7 +315,7 @@ namespace nsFigures
             }
 
             // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
-
+            _ = _SupportDessin.Couleur_Selectionne(CColor);
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -369,11 +374,12 @@ namespace nsFigures
     }//class clsRectangle
 
 
-    internal class clsCarre : clsFigures
+    public class clsCarre : clsFigures
     {
-        internal clsCarre(Point depart, Color color ,string ANom, ushort ALargeurHauteur)
-            : base(depart, color, ANom)
+        public clsCarre(Point depart, Color AColor ,string ANom, ushort ALargeurHauteur)
+            : base(depart, AColor, ANom)
         {
+            CColor = AColor;
             LargeurHauteur = ALargeurHauteur;
         }
         public ushort _LargeurHauteur;
@@ -385,6 +391,11 @@ namespace nsFigures
 
         }
 
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }
         internal override void Dessine()
         {
             if(_SupportDessin is null)
@@ -424,7 +435,7 @@ namespace nsFigures
            
             try
             {
-                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+                _ = _SupportDessin.Couleur_Selectionne(CColor);
             }
           
             catch (ArgumentException ae)
@@ -457,15 +468,16 @@ namespace nsFigures
         }
     }
 
-    internal class clsLigne : clsRectangle
+    public class clsLigne : clsRectangle
     {
-        internal clsLigne(Point depart,Color color,string ANom, ushort longueur,   float angle )
+        public clsLigne(Point depart,Color color,string ANom, ushort longueur,   float angle )
             : base(depart, color, 1, longueur, ANom)
                   
         {
-           
+    
         }
 
+    
         internal override void Dessine()
         {
 
@@ -504,7 +516,7 @@ namespace nsFigures
             }
             Console.WriteLine("clsLigne");
             
-                _ = _SupportDessin.Couleur_Selectionne(Couleur.R, Couleur.G, Couleur.B);
+                _ = _SupportDessin.Couleur_Selectionne(CColor);
           
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
 
@@ -521,12 +533,14 @@ namespace nsFigures
 
         }
     }
-    internal class clsCube : clsFigures
+    public class clsCube : clsFigures
     {
-        internal clsCube(Point depart, Color color, string? ANom, ushort AProfondeur)
-            : base(depart, color,ANom)
+        public clsCube(Point depart, Color AColor, string? ANom, ushort AProfondeur)
+            : base(depart, AColor,ANom)
         {
             profondeur = AProfondeur;
+            CColor = AColor;
+
         }
         public ushort _profondeur;
 
@@ -539,6 +553,11 @@ namespace nsFigures
             }
         }
 
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }
         internal override void Dessine()
         {
 
@@ -574,6 +593,7 @@ namespace nsFigures
             }
             Console.WriteLine("ClsCube");
         
+            _ = _SupportDessin.Couleur_Selectionne(CColor);
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -621,11 +641,12 @@ namespace nsFigures
 
 
     }
-    internal class clsCercle : clsFigures
+    public class clsCercle : clsFigures
     {
-        internal clsCercle(Point depart, Color color, string ANom, ushort ARayon)
-            : base(depart,color,  ANom)
+        public clsCercle(Point depart, Color AColor, string ANom, ushort ARayon)
+            : base(depart,AColor,  ANom)
         {
+            CColor = AColor;
             Rayon = ARayon;
 
         }
@@ -637,6 +658,11 @@ namespace nsFigures
             set { _Rayon = value; }
         }
 
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }   
         internal override void Dessine()
         {   
             if(_SupportDessin is null)
@@ -687,9 +713,9 @@ namespace nsFigures
 
         }
     }
-    internal class clsCylindre : clsCercle
+    public class clsCylindre : clsCercle
     {
-        internal clsCylindre(Point depart,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
+        public clsCylindre(Point depart,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
         : base (depart, color, ANom, ARayon)
         {
             profondeur = AProfondeur;
@@ -754,7 +780,7 @@ namespace nsFigures
 
     }
 
-    internal class clsPoint : clsFigures
+    public class clsPoint : clsFigures
 
     {
 

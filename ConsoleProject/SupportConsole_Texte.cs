@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace ConsoleProject
             throw new NotImplementedException();
         }
 
-        public int Couleur_Selectionne(byte ARouge, byte AVert, byte ABleu)
+        public int Couleur_Selectionne(Color color)
         {
-            Console.WriteLine($"Couleur sélectionnée - Rouge: {ARouge}, Vert: {AVert}, Bleu: {ABleu}");
+            Console.WriteLine($"Couleur sélectionnée - {color.Name})");
             return 1;
 
         }

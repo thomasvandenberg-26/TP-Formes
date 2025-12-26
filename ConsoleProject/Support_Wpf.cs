@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace ConsoleProject
             throw new NotImplementedException();
         }
 
-        int ISupportDessin.Couleur_Selectionne(byte ARouge, byte AVert, byte ABleu)
+        int ISupportDessin.Couleur_Selectionne(Color color)
         {
             throw new NotImplementedException();
         }
