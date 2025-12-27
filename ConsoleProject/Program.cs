@@ -32,14 +32,15 @@ class Program
         //LogEvents.Instance.PushEvent(new Event(EventType.Alarme, "T1 - Alarme"));
         //Thread.Sleep(4200);
 
-        Console.WriteLine("\n=== TEST FIGURES: création + dessin ===");
+        //Console.WriteLine("\n=== TEST FIGURES: création + dessin ===");
         // Création du support
 
         //clsFigures.SupportDessin = new SupportImprimante_Canon();
-        clsFigures.SupportDessin = new SupportImprimante_Canon();
+        //clsFigures.SupportDessin = new SupportImprimante_Canon();
         // Création du dessin
 
-        Dessin DessindeThomas = new Dessin("Dessin de Thomas", 1.0f);
+        Dessin DessindeThomas = new Dessin("Dessin de Thomas du 27", 1.0f);
+
 
 
         // Oui les constucteurs ne sont très propres mais je dois avancer 
@@ -52,7 +53,15 @@ class Program
         DessindeThomas.Ajouter_Figure(cr1);
         DessindeThomas.Ajouter_Figure(rect1);
         DessindeThomas.Ajouter_Figure(cb1);
-        DessindeThomas.DessinerFigures();
+        try
+        {
+            DessindeThomas.SaveToJson("dessindethomas.json");
+        } 
+        catch (Exception ex)
+        {
+            LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Erreur lors de la sauvegarde du dessin: {ex.Message}, {DateTime.Now}"));
+        }
+        //DessindeThomas.DessinerFigures();
 
         //Console.WriteLine("Attends ~4 secondes pour laisser le timer flusher...");
         //Thread.Sleep(4200);
@@ -73,7 +82,7 @@ class Program
         //Console.WriteLine("Ouvre 'Dessin_CANON.txt' dans bin/Debug/netX.Y/");
         //Console.WriteLine("Appuie sur Entrée pour quitter.");
         //Console.ReadLine();
-        Thread.Sleep(3500);
+        // Thread.Sleep(3500);
 
     }
 }

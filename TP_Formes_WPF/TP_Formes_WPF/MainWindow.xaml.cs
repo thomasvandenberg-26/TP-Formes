@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 using nsFigures;
 namespace TP_Formes_WPF
 {
@@ -20,7 +21,7 @@ namespace TP_Formes_WPF
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += (_, __) => Dessiner();
+            Loaded += (_, __) => DessinerDepuisJson();
             OpenLogWindow();
         }
 
@@ -47,6 +48,48 @@ namespace TP_Formes_WPF
             ));
 
             dessin.DessinerFigures();
+        }
+       private void DessinerDepuisJson()
+        {
+            try
+            {
+                // 1) Chemin du fichier JSON
+                string filePath = "dessindethomas.json";
+
+                // (Optionnel) tu peux mettre un chemin absolu si besoin
+                // string filePath = @"C:\...\dessin.json";
+
+                if (!File.Exists(filePath))
+                {
+                    MessageBox.Show($"Fichier introuvable : {filePath}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // 2) Nettoyer le canvas
+                MainCanvas.Children.Clear();
+
+                // 3) Brancher le support WPF
+                clsFigures.SupportDessin = new SupportWPF(MainCanvas);
+
+                // 4) Charger le dessin depuis le JSON
+                // -> LoadFromJson doit être STATIC et retourner un Dessin
+                Dessin dessin = Dessin.LoadFromJson(filePath);
+
+                
+                // 5) Dessiner toutes les figures
+                dessin.DessinerFigures();
+
+                // 6) Log (optionnel)
+                LogEvents.Instance.PushEvent(new Event(EventType.Information,
+                    $"Dessin affiché depuis {filePath}"));
+            }
+            catch (Exception ex)
+            {
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme,
+                    $"Erreur DessinerDepuisJson : {ex.Message}"));
+
+                MessageBox.Show(ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private void OpenLogWindow()
         {

@@ -470,7 +470,7 @@ namespace nsFigures
 
     public class clsLigne : clsRectangle
     {
-        public clsLigne(Point depart,Color color,string ANom, ushort longueur,   float angle )
+        public clsLigne(Point depart,Color color,string ANom, ushort longueur )
             : base(depart, color, 1, longueur, ANom)
                   
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,6 +46,8 @@ namespace TP_Formes_WPF
                 if (Events.Count > 500)
                     Events.RemoveAt(0);
             });
+
+            Dessin dessin = JsonSerializer.Deserialize(e.Message, typeof(Dessin)) as Dessin;
         }
 
         protected override void OnClosed(EventArgs e)
