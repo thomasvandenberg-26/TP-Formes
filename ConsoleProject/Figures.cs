@@ -17,6 +17,7 @@ namespace nsFigures
 
         // à l'aide de constantes
 
+        // Taille X et Y maximales qui correspondent à la taille du support de dessin
         public const int MAX_X = 800;
         public const int MAX_Y = 480;
 
@@ -27,8 +28,6 @@ namespace nsFigures
         
 
             depart = ADepart;
-
-            Angle = 0.0f;
 
             Nom = ANom ?? ""; // Assure que _Nom n'est jamais null
 
@@ -52,12 +51,8 @@ namespace nsFigures
 
         #endregion
 
-        #region propriété X
+        #region propriété depart
 
-        // Accesseur
-
-        // internal const ushort MAX_X = 800;
-        // = (value > MAX_X) ? MAX_X : value;
 
         private Point _depart;
 
@@ -86,29 +81,6 @@ namespace nsFigures
         #endregion
 
 
-
-        #region propriété Y
-
-        //--- Propriété Y
-
-        private Point _Y; // Propriété privée qui contient la valeur (0 à 480 pixels)
-
-        public Point Y // Accesseurs R/W
-
-        {
-
-            get { return _Y; } // Retour directement la valeur
-
-            set { _Y = value; } // Test avec plafonnement si besoin
-
-        }
-
-        #endregion
-
-
-
-        #region Angle
-
         // --- Propriété Couleur
         public Color _Couleur; // Propriété privée qui contient la valeur de la couleur
         public Color Couleur // Accesseurs R/W
@@ -116,27 +88,6 @@ namespace nsFigures
             get { return _Couleur; } // Retour directement la valeur
             set { _Couleur = value; } // Test avec plafonnement si besoin
         }
-
-        //--- Propriété Angle
-
-
-        public const float MAX_ANGLE = 360.0f;
-
-        private float _Angle; // Propriété privée qui contient la valeur (0.0 à 360.0°)
-
-        public float Angle // Accesseurs R/W
-
-        {
-
-            get { return _Angle; } // Retour directement la valeur
-
-            set { _Angle = (value > MAX_ANGLE) ? MAX_ANGLE : (value < 0.0f ? 0.0f : value); } // Test avec plafonnement si besoin
-
-        }
-
-        #endregion
-
-
         #region --- Propriété Nom
 
         //X159#3
@@ -168,10 +119,10 @@ namespace nsFigures
 
         //#region --- Propriété SupportDessin
 
-        //// static: une seule variable pour tous les objets créés (qqes soit le nombre d’objets)
 
-        static protected ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner
-        static public ISupportDessin? SupportDessin// Accesseurs W
+        static protected ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner , ICI support console ou imprimante(fichier texte)
+
+        static public ISupportDessin? SupportDessin
 
         {
 
@@ -201,7 +152,7 @@ namespace nsFigures
 
         {
 
-            return $"Figure \"{Nom}\": X={depart.X} Y={depart.Y}";
+            return $"Figure \"{Nom}\": X={depart.X} Y={depart.Y} Couleur = {Couleur}";
 
         }
 
@@ -288,7 +239,6 @@ namespace nsFigures
             }
 
             Console.WriteLine("ClsRectangle");
-            // D’après ton code tu utilises X.X pour la coordonnée X et Y.Y pour la coordonnée Y
             int x1 = depart.X;
             int y1 = depart.Y;
             int x2 = depart.X + Largeur;
@@ -432,12 +382,15 @@ namespace nsFigures
             }
 
             Console.WriteLine("ClsCarre");
-           
+
+            // Selection de la couleur
             try
             {
                 _ = _SupportDessin.Couleur_Selectionne(CColor);
+
+                // Si réussi je dessine le carré
             }
-          
+
             catch (ArgumentException ae)
             {
                
@@ -450,6 +403,8 @@ namespace nsFigures
                 LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {fe.Message} \"{Nom}\"."));
                 return;
             }
+
+            // Dessin sur le support défini par avance de l'utilisateur
             _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
             _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
             _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
@@ -480,8 +435,8 @@ namespace nsFigures
     
         internal override void Dessine()
         {
-
-            if(_SupportDessin is null)
+            // Je vérifie que le support de dessin est défini
+            if (_SupportDessin is null)
             {
                 return;
             }
@@ -489,6 +444,7 @@ namespace nsFigures
             if (_SupportDessin is SupportImprimante_Canon canon)
             {
                 canon.DebutFigure("Ligne", Nom);
+                // Ca permet d'indiquer le nom de la figure dans le fichier de sortie
             }
             int x1 = depart.X;
             int y1 = depart.Y;
@@ -641,206 +597,6 @@ namespace nsFigures
 
 
     }
-    public class clsCercle : clsFigures
-    {
-        public clsCercle(Point depart, Color AColor, string ANom, ushort ARayon)
-            : base(depart,AColor,  ANom)
-        {
-            CColor = AColor;
-            Rayon = ARayon;
-
-        }
-        public ushort _Rayon;
-
-        public ushort Rayon
-        {
-            get { return _Rayon; }
-            set { _Rayon = value; }
-        }
-
-        public Color CColor
-        {
-            get { return _Couleur; }
-            set { _Couleur = value; }
-        }   
-        internal override void Dessine()
-        {   
-            if(_SupportDessin is null)
-            {
-                return;
-            }
-            if (_SupportDessin is SupportImprimante_Canon canon)
-            {
-                canon.DebutFigure("Cube", Nom);
-            }
-
-
-            Console.WriteLine($"--- clsCercle.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} \"{Nom}\")");
-
-            //Console.WriteLine($"    (C={Couleur})");
-
-        }
-
-        override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
-
-        {
-
-            // Expansion Largeur & Hauteur
-
-            Console.WriteLine($"clsCercle.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
-
-
-
-            if (ACoeffX < 0.0f)
-
-                ACoeffX = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.PushEvent(new Event( EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée."));
-
-
-            Rayon = (ushort)(Rayon * ACoeffX); // Calcul nouvelle Rayon
-
-
-
-            Dessine();// Redessine figure
-
-        }
-
-        public override string ToString()
-
-        {
-
-            return $"Cercle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon}";
-
-        }
-    }
-    public class clsCylindre : clsCercle
-    {
-        public clsCylindre(Point depart,Color color,  string ANom, ushort ARayon, ushort AProfondeur)
-        : base (depart, color, ANom, ARayon)
-        {
-            profondeur = AProfondeur;
-        }
-
-        public ushort _profondeur;
-
-        public ushort profondeur
-        {
-            get { return _profondeur; }
-            set { _profondeur = value; }
-        }
-
-
-        internal override void Dessine()
-        {
-
-            Console.WriteLine($"--- clsCylindre.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} P={profondeur}\"{Nom}\")");
-        }
-
-        internal override void Zoom(float ACoeffX, float ACoeffY = 1)
-        {
-            // Expansion Largeur & Hauteur
-
-            Console.WriteLine($"clsCercle.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
-
-
-
-            if (ACoeffX < 0.0f)
-
-                ACoeffX = 1.0f; // Coeff négatif non accepté
-
-
-            if (ACoeffX < 0.0f)
-
-                ACoeffX = 1.0f; // Coeff négatif non accepté
-            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.")); ;
-
-            try
-            {
-
-                profondeur = (ushort)(profondeur * ACoeffX); // Calcul nouvelle Rayon
-
-            }
-            catch(OverflowException oe)
-            {
-                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"{oe.Message} - {Nom}"));
-                profondeur = ushort.MaxValue; // Définit à la valeur maximale en cas de débordement
-            }
-
-
-            Dessine();
-        }
-
-        public override string ToString()
-
-        {
-            
-            return $"Cercle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} P={profondeur}";
-
-        }
-
-    }
-
-    public class clsPoint : clsFigures
-
-    {
-
-        #region --- ctor
-
-        internal clsPoint(Point depart, Color color, string ANom = "")
-
-          : base( depart, color, ANom) // Appel classe Parent (ici = clsFigure)
-
-        {
-
-            // Init des propriétés de la classe clsFigure -> base(...)
-
-            Console.WriteLine($"clsPoint.ctor(X={depart.X} Y={depart.Y} \"{Nom}\")");
-
-        }
-
-        #endregion
-
-
-
-        #region --- Propriété SupportDessin
-
-        // static: une seule variable pour tous les objets créés (qqes soit le nombre d’objets)
-
-        //static protected nsSupportDessin.ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner
-
-        //static public nsSupportDessin.ISupportDessin? SupportDessin// Accesseurs W
-
-        //{
-
-        //    set { _SupportDessin = value; }
-
-        
-
-        #endregion
-        //---------------------------------
-
-        // Dessin du Point
-
-        override internal void Dessine()
-
-        {
-
-            Console.WriteLine($"--- clsPoint.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} \"{Nom}\")");
-
-        }
-
-
-
-        //---------------------------------
-
-        public override string ToString()
-
-        {
-
-            return $"Point \"{Nom}\": X={depart.X} Color={Couleur} Y={Y}";
-
-        }
-
-    } //class clsPoint
-
+   
+ 
 }

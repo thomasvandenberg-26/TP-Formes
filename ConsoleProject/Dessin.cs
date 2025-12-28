@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace nsFigures
 {
+
     public class Dessin
     {
+        // Classe contenant une série de figures
 
         private List<clsFigures> figures;
         string jsonString =" ";
@@ -20,7 +22,7 @@ namespace nsFigures
         {
 
             Nom = ANom;
-            DateTime dateCreation = DateTime.Now; 
+            DateTime dateCreation = DateTime.Now; // Date de création actuelle
             Version = AVersion;
             figures = new List<clsFigures>();
 
@@ -68,9 +70,6 @@ namespace nsFigures
                 figures.Add(figure);
          
                 LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Figure : {figure.Nom} ajouté au dessin"));
-
-                LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Figure Ajouté dans le json : {jsonString}"));
-
                 return;
 
             }
@@ -92,7 +91,8 @@ namespace nsFigures
                 LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur inconnue lors de l'ajout de la figure au dessin : {ex.Message}"));
             }
 
-            SaveToJson("dessin.json");
+            SaveToJson("dessin.json");   
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Figure Ajouté dans le json : {jsonString}"));
 
 
 
