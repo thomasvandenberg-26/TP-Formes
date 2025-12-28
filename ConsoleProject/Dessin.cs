@@ -142,7 +142,7 @@ namespace nsFigures
                     DateCreation = this.Date_Creation,
                     Figures = this.figures.Select(f =>
                     {
-                        var fig =  new FigureDto
+                        var fig =  new FigureData
                         {
                             Type = f.GetType().Name,
                             Nom = f.Nom,

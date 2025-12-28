@@ -20,8 +20,6 @@ namespace nsFigures
 
         public int CountPerdus { get; set; }
 
-        //Taille maximum de la collection d'evenements
-        public int TailleMaximumEvents = 1000;
         // Collection d'evenements
         public Queue< Event> _events = new Queue<Event>();  
 
@@ -44,9 +42,8 @@ namespace nsFigures
         {
             lock (_lock)
             {
-               
+
                 _events.Enqueue(e);
-                // Suppresion des anciens evenements si la taille du dictionnaire depasse 1000
 
                 if (_events.Count >= MAX_EVENTS)
                 { 
@@ -56,11 +53,11 @@ namespace nsFigures
                 switch (e.Type)
 
                 { 
+                    // Incremente le compteur selon le type d'evenement
                     case EventType.Information:
                         CountInfo++;
                         break;
-                    case EventType.Alerte:
-                       
+                    case EventType.Alerte:                    
                         CountAlerte++;
                         break;
                     case EventType.Alarme:

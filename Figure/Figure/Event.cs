@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace nsFigures
 {
-  
-        public class Event
+    // Classe représentant un événement dans le système de journalisation
+
+    public class Event
         {
             public EventType Type { get; }
             public string Message { get; }
