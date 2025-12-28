@@ -129,11 +129,12 @@ namespace nsFigures
             }
             
         }
-
+        // Méthode qui permet de sauvegarder le dessin dans un fichier JSON
         public void SaveToJson(string filePath)
         {
             try
             {
+                // Définition de la structure de données à sérialiser
                 var dessinData = new
                 {
                     Nom = this.Nom,
@@ -181,10 +182,7 @@ namespace nsFigures
 
                     
                 };
-                
-
-                      
-                        // Ajouter d'autres propriétés spécifiques aux figures si nécessaire
+               
                  
                 jsonString = JsonSerializer.Serialize(dessinData, new JsonSerializerOptions { WriteIndented = true });
                 System.IO.File.WriteAllText(filePath, jsonString);
@@ -195,11 +193,11 @@ namespace nsFigures
                 LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur lors de la sauvegarde du dessin en JSON : {ex.Message}"));
             }
         }
-
+        // Méthode qui permet de charger un dessin depuis un fichier JSON qui est appelée dans le WPF MainWindow.xaml.cs ligne 76
         public static Dessin LoadFromJson(string filePath)
         {
             var json = File.ReadAllText(filePath);
-            var dto = JsonSerializer.Deserialize<DessinDto>(json)
+            var dto = JsonSerializer.Deserialize<DessinData>(json)
                       ?? throw new Exception("JSON invalide (DessinDto null)");
 
             var dessin = new Dessin(dto.Nom, dto.Version);
@@ -219,7 +217,6 @@ namespace nsFigures
                     nameof(clsCarre) => new clsCarre(point, color,f.Nom, f.Largeur),
                     nameof(clsLigne) => new clsLigne(point, color, f.Nom, f.Largeur),
                     nameof(clsCube) => new clsCube(point, color, f.Nom, f.Profondeur),
-                    nameof(clsCercle) => new clsCercle(point, color, f.Nom, f.Rayon),
                     _ => throw new Exception($"Type de figure inconnu: {f.Type}")
                 };
 

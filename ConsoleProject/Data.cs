@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace nsFigures
 {
-    public class DessinDto
+    // Caractéristiques sérialisables d'un dessin
+    public class DessinData
     {
         public string Nom { get; set; } = "";
         public float Version { get; set; }
         public DateTime DateCreation { get; set; }
-        public List<FigureDto> Figures { get; set; } = new();
+        public List<FigureData> Figures { get; set; } = new();
     }
-    public class FigureDto
+    // Caractéristiques sérialisables d'une figure
+    public class FigureData
     {
         public string Type { get; set; } = "";  // "clsRectangle", "clsCube", "clsCercle"
         public string Nom { get; set; } = "";
