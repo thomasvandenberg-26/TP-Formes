@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using nsFigures;
-using ConsoleProject;
 
 namespace TP_Formes_WF
 {
-     class SupportWF : ISupportDessin
+    // Support de dessin pour Windows Forms
+    class SupportWF : ISupportDessin
     {
 
         private Graphics _g;
@@ -28,6 +28,7 @@ namespace TP_Formes_WF
         {
            if (!color.IsEmpty)
             {
+                // J'initialise le stylo de la bonne couleur
                 _pen = new Pen(color);
                 return 1;
 
