@@ -1,5 +1,4 @@
-﻿using ConsoleProject;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Xml;
 using nsFigures;
 using System.Runtime.InteropServices.JavaScript;

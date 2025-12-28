@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace ConsoleProject
+namespace nsFigures
 {
     internal class SupportImprimante_Canon : ISupportDessin
     {

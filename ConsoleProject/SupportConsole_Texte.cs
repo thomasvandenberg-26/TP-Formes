@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleProject
+namespace nsFigures
 {
     // Remplacer "implements" par ":", la syntaxe C# correcte pour l'implémentation d'une interface.
     // S'assurer que l'interface ISupportDessin existe et est accessible dans ce contexte.
