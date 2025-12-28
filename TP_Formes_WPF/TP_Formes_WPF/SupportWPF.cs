@@ -1,4 +1,4 @@
-﻿using ConsoleProject;
+﻿using nsFigures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

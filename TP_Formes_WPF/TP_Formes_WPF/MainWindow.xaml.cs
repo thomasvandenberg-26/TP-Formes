@@ -25,6 +25,7 @@ namespace TP_Formes_WPF
             OpenLogWindow();
         }
 
+        // Soit on dessine "à la main" soit on dessine depuis un fichier JSON
         private void Dessiner()
         {
             MainCanvas.Children.Clear();
@@ -54,11 +55,11 @@ namespace TP_Formes_WPF
             try
             {
                 // 1) Chemin du fichier JSON
+
+                // A chaque changement dans le fichier il faut le remettre dans le répertoire de sortie (bin\Debug\net9.0) de l'application
                 string filePath = "dessindethomas.json";
 
-                // (Optionnel) tu peux mettre un chemin absolu si besoin
-                // string filePath = @"C:\...\dessin.json";
-
+  
                 if (!File.Exists(filePath))
                 {
                     MessageBox.Show($"Fichier introuvable : {filePath}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
