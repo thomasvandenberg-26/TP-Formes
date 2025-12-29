@@ -7,6 +7,6 @@ Je dois partir aujourd'hui pour fêter la nouvelle année dans un camp de 4 jour
 
 Merci par avance de ta compréhension.
 
-Belle fêtes de fin de d'année
+Belles fêtes de fin de d'année
 
 Thomas
