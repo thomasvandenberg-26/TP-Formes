@@ -1,4 +1,6 @@
-﻿using nsFigures;
+﻿using Microsoft.Data.SqlClient;
+using nsFigures;
+using Service;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,6 +29,15 @@ namespace nsFigures
             figures = new List<clsFigures>();
 
             LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Un dessin {Nom} a été crée"));
+            try
+            {
+                InsertDessinInDB(Nom, Version, dateCreation);
+            }
+            catch (Exception ex)
+            {
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, $"Erreur lors de l'insertion du dessin dans la base de données : {ex.Message}"));
+                Console.WriteLine($"Erreur lors de l'insertion du dessin dans la base de données : {ex.Message}");
+            }
 
         }
 
@@ -224,6 +235,15 @@ namespace nsFigures
             }
 
             return dessin;
+        }
+
+        public void InsertDessinInDB(string nom, float version, DateTime dt)
+        {
+            int intVersion =  Convert.ToInt32(version);
+            SqlConnection conn = Db.GetConnection();
+            SqlCommand cmd = new SqlCommand($"INSERT INTO Dessins (Nom, Version, CreatedAt) VALUES ({Nom}, {intVersion}, @DateCreation)", conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
     }
 }
