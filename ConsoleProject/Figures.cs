@@ -1,23 +1,10 @@
-﻿​
-using System;
-
-using System.Collections.Generic;
-
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
-using System.Threading.Tasks;
-
-
-
+﻿using System.Drawing;
+using System.Xml;
+using nsFigures;
+using System.Runtime.InteropServices.JavaScript;
 namespace nsFigures
-
 {
-
-    //=========================
-
-    internal class clsFigures
+    public abstract class clsFigures
 
     {
 
@@ -25,33 +12,50 @@ namespace nsFigures
 
         //-------------------------
 
-        internal clsFigures(ushort AX, ushort AY, string ANom = "")
+        // je limite la taille des images à 800x480 pixels
+
+        // à l'aide de constantes
+
+        // Taille X et Y maximales qui correspondent à la taille du support de dessin
+        public const int MAX_X = 800;
+        public const int MAX_Y = 480;
+
+
+        internal clsFigures(Point ADepart, Color color, string? ANom = null)
 
         {
+        
 
-            X = AX;
+            depart = ADepart;
 
-            Y = AY;
+            Nom = ANom ?? ""; // Assure que _Nom n'est jamais null
 
-            Angle = 0.0f;
-
-            Nom = ANom ?? string.Empty;
 
         }
 
         #endregion
 
+        #region Liste des figures
+
+        // Champ privé
+        public static List<clsFigures> _listeFigures = new List<clsFigures>();
+
+        // Propriété publique
+        public List<clsFigures> ListeFigures
+        {
+            get { return _listeFigures; }
+            set { _listeFigures = value ?? new List<clsFigures>(); }
+        }
 
 
-        #region propriété X
+        #endregion
 
-        // Accesseur
+        #region propriété depart
 
-        internal const ushort MAX_X = 800;
 
-        public ushort _X;
+        private Point _depart;
 
-        public ushort X // 0 à 800 pixels
+        public Point depart// 0 à 800 pixels
 
         {
 
@@ -59,7 +63,7 @@ namespace nsFigures
 
             {
 
-                return _X;
+                return _depart;
 
             }
 
@@ -67,7 +71,7 @@ namespace nsFigures
 
             {
 
-                _X = (value > MAX_X) ? MAX_X : value;
+                _depart = value; 
 
             }
 
@@ -76,52 +80,80 @@ namespace nsFigures
         #endregion
 
 
+        // --- Propriété Couleur
+        public Color _Couleur; // Propriété privée qui contient la valeur de la couleur
+        public Color Couleur // Accesseurs R/W
+        {
+            get { return _Couleur; } // Retour directement la valeur
+            set { _Couleur = value; } // Test avec plafonnement si besoin
+        }
+        #region --- Propriété Nom
 
-        #region propriété Y
+        //X159#3
 
-        //--- Propriété Y
+        static int i = 0; 
+        public string? _Nom;   // Propriété privée qui contient le Nom de la figure
 
-        public const ushort MAX_Y = 480;
-
-        private ushort _Y; // Propriété privée qui contient la valeur (0 à 480 pixels)
-
-        public ushort Y // Accesseurs R/W
+        public string Nom // Accesseurs Lecture/Écriture
 
         {
+            
+            get { return _Nom ?? ""; } // Retour directement la valeur
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    _Nom = value  ;
+                else
+                {
+                    // Génère un nom par défaut basé sur la liste
+                    i++;
+                    _Nom = $"Figure{i}";
 
-            get { return _Y; } // Retour directement la valeur
-
-            set { _Y = (value > MAX_Y) ? MAX_Y : value; } // Test avec plafonnement si besoin
-
+                }
+            }
         }
 
         #endregion
 
 
+        //#region --- Propriété SupportDessin
 
-        #region Angle
 
-        //--- Propriété Angle
+        static protected ISupportDessin? _SupportDessin; // Propriété  qui contient le support pour dessiner , ICI support console ou imprimante(fichier texte)
 
-        public const float MAX_ANGLE = 360.0f;
-
-        private float _Angle; // Propriété privée qui contient la valeur (0.0 à 360.0°)
-
-        public float Angle // Accesseurs R/W
+        static public ISupportDessin? SupportDessin
 
         {
 
-            get { return _Angle; } // Retour directement la valeur
-
-            set { _Angle = (value > MAX_ANGLE) ? MAX_ANGLE : (value < 0.0f ? 0.0f : value); } // Test avec plafonnement si besoin
+            set { _SupportDessin = value; }
 
         }
 
-        #endregion
+        // #endregion
 
 
+        abstract internal void Dessine();
 
-        public string Nom;
+        virtual internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
+
+        {
+
+            // Méthode par défaut : rien à traiter dans classe clsFigure !
+
+            Console.WriteLine($"clsFigure.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
+
+            Dessine();// Redessine figure
+            
+
+        }
+
+        public override string ToString()
+
+        {
+
+            return $"Figure \"{Nom}\": X={depart.X} Y={depart.Y} Couleur = {Couleur}";
+
+        }
 
     }//class clsFigures
 
@@ -129,13 +161,13 @@ namespace nsFigures
 
     //=========================
 
-    internal class clsRectangle : clsFigures
+    public class clsRectangle : clsFigures
 
     {
 
-        internal clsRectangle(ushort AX, ushort AY, ushort ALargeur, ushort AHauteur, string ANom = "")
+        public clsRectangle(Point depart, Color AColor, ushort AHauteur, ushort ALargeur, string ANom = "")
 
-          : base(AX, AY, ANom)
+          : base(depart, AColor, ANom)
 
         {
 
@@ -143,6 +175,7 @@ namespace nsFigures
 
             Hauteur = AHauteur;
 
+            CColor= AColor;
         }
 
 
@@ -159,7 +192,7 @@ namespace nsFigures
 
             get { return _Largeur; } // Retour directement la valeur
 
-            set { _Largeur = (value > MAX_X) ? MAX_X : value; } // Test avec plafonnement si besoin
+            set { _Largeur = value; } // Test avec plafonnement si besoin;
 
         }
 
@@ -179,7 +212,109 @@ namespace nsFigures
 
             get { return _Hauteur; } // Retour directement la valeur
 
-            set { _Hauteur = (value > MAX_Y) ? MAX_Y : value; } // Test avec plafonnement si besoin
+            set { _Hauteur = value; } // Test avec plafonnement si besoin
+
+        }
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }   
+        internal override void Dessine()
+        {
+
+            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} L={Largeur} H={Hauteur} \"{Nom}\")");
+           
+
+            if(_SupportDessin is null)
+            {
+                LogEvents.Instance.PushEvent(new Event(EventType.Alarme, "Le support de dessin n'est pas défini."));
+                return;
+            }
+
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Rectangle", Nom);
+            }
+
+            Console.WriteLine("ClsRectangle");
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + Largeur;
+            int y2 = depart.Y + Hauteur;
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+              
+       
+                x1 = 0;
+                y1 = 0; 
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+               
+                x2 = MAX_X; 
+                y2 = MAX_Y;
+                Event depassementX2 = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" dépasse les limites maximales du dessin");
+                LogEvents.Instance.PushEvent(depassementX2);
+            }
+
+            // 4️⃣ Tracé des 4 côtés du rectangle avec l’interface commune
+            _ = _SupportDessin.Couleur_Selectionne(CColor);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+  
+          LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Dessin du rectangle \"{Nom}\" effectué."));
+           
+        }
+
+        override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
+
+        {
+
+            // Expansion Largeur & Hauteur
+
+            Console.WriteLine($"clsRectangle.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
+
+
+
+            if (ACoeffX < 0.0f)
+
+                ACoeffX = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée.")); ;
+
+
+
+            if (ACoeffY < 0.0f)
+
+                ACoeffY = 1.0f; // Coeff négatif non accepté
+                 LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée."));
+
+
+
+            Largeur = (ushort)(Largeur * ACoeffX); // Calcul nouvelle Largeur
+
+            Console.WriteLine($"Largeur après zoom: {Largeur}");
+
+            Hauteur = (ushort)(Hauteur * ACoeffY); // Calcul nouvelle Hauteur
+
+
+
+            Dessine();// Redessine figure
+
+        }
+
+        public override string ToString()
+
+        {
+
+            return $"Rectangle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} L={Largeur} H={Hauteur}";
 
         }
 
@@ -188,72 +323,279 @@ namespace nsFigures
     }//class clsRectangle
 
 
-    internal class clsCarre : clsFigures
+    public class clsCarre : clsFigures
     {
-        internal clsCarre(ushort AX, ushort AY, string ANom, ushort ALargeurHauteur)
-            : base(AX, AY, ANom)
+        public clsCarre(Point depart, Color AColor ,string ANom, ushort ALargeurHauteur)
+            : base(depart, AColor, ANom)
         {
-
+            CColor = AColor;
+            LargeurHauteur = ALargeurHauteur;
         }
         public ushort _LargeurHauteur;
 
-        public ushort ALargeurHauteur
+        public ushort LargeurHauteur
         {
             get { return _LargeurHauteur; }
             set { _LargeurHauteur = value; }
 
         }
+
+        public Color CColor
+        {
+            get { return _Couleur; }
+            set { _Couleur = value; }
+        }
+        internal override void Dessine()
+        {
+            if(_SupportDessin is null)
+            {
+                return;
+            }
+
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Carre", Nom);
+            }
+
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + LargeurHauteur;
+            int y2 = depart.Y + LargeurHauteur;
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                x1 = 0;
+                y1 = 0;
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+                x2 = MAX_X;
+                y2 = MAX_Y;
+                Event Depassement = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" a dépassé les limites du cadre");
+                LogEvents.Instance.PushEvent(Depassement);
+            }
+
+            Console.WriteLine("ClsCarre");
+
+            // Selection de la couleur
+            try
+            {
+                _ = _SupportDessin.Couleur_Selectionne(CColor);
+
+                // Si réussi je dessine le carré
+            }
+
+            catch (ArgumentException ae)
+            {
+               
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {ae.Message}\"{Nom}\"."));
+                return;
+            }
+            catch (FormatException fe)
+            {
+
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, $"Exception {fe.Message} \"{Nom}\"."));
+                return;
+            }
+
+            // Dessin sur le support défini par avance de l'utilisateur
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+                                                            //Console.WriteLine($"--- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={LargeurHauteur} \"{Nom}\")");
+
+             LogEvents.Instance.PushEvent(new Event(EventType.Information, $"Dessin du carré \"{Nom}\" effectué."));
+        }
+
+        public override string ToString()
+
+        {
+
+            return $"Carré \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} Coté={LargeurHauteur}";
+
+        }
     }
 
-    internal class clsCube : clsFigures
+    public class clsLigne : clsRectangle
     {
-        internal clsCube(ushort AX, ushort AY, string ANom, float profondeur)
-            : base(AX, AY, ANom)
+        public clsLigne(Point depart,Color color,string ANom, ushort longueur )
+            : base(depart, color, 1, longueur, ANom)
+                  
         {
-            profondeur = _profondeur;
+    
         }
-        public float _profondeur;
 
-        public float profondeur
+    
+        internal override void Dessine()
+        {
+            // Je vérifie que le support de dessin est défini
+            if (_SupportDessin is null)
+            {
+                return;
+            }
+
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Ligne", Nom);
+                // Ca permet d'indiquer le nom de la figure dans le fichier de sortie
+            }
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + Largeur;
+            int y2 = depart.Y + 1;
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                x1 = 0;
+                y1 = 0;
+                Event DebutNonAtteint = new Event(EventType.Alerte, $"Le rectangle \"{Nom}\" n'atteint pas le debut du cadre");
+                LogEvents.Instance.PushEvent(DebutNonAtteint);
+            }
+
+            if (x2 > MAX_X || y2 > MAX_Y)
+            {
+               
+                x2 = MAX_X;
+                y2 = MAX_Y;
+                Event Depassement = new Event(EventType.Alerte, $"Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480");
+                LogEvents.Instance.PushEvent(Depassement);
+
+            }
+            Console.WriteLine("clsLigne");
+            
+                _ = _SupportDessin.Couleur_Selectionne(CColor);
+          
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y2); // haut
+
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, $" \"{Nom}\" effectué."));
+
+            //Console.WriteLine($"-- clsRectangle.Dessine(X={X} Y={Y} Color={Couleur} C={Largeur} H={1}");
+        }
+
+        public override string ToString()
+
+        {
+
+            return $"Ligne \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} L={Largeur}";
+
+        }
+    }
+    public class clsCube : clsFigures
+    {
+        public clsCube(Point depart, Color AColor, string? ANom, ushort AProfondeur)
+            : base(depart, AColor,ANom)
+        {
+            profondeur = AProfondeur;
+            CColor = AColor;
+
+        }
+        public ushort _profondeur;
+
+        public ushort profondeur
         {
             get { return _profondeur; }
-            set { _profondeur = value;
+            set
+            {
+                _profondeur = value;
             }
         }
-        internal class clsCercle : clsFigures
+
+        public Color CColor
         {
-            internal clsCercle(ushort AX, ushort AY, string ANom, float ARayon)
-                : base(AX, AY, ANom)
-            {
-                Rayon = ARayon;
-
-            }
-            public float _Rayon;
-
-            public float Rayon
-            {
-                get { return _Rayon; }
-                set { _Rayon = value; }
-            }
+            get { return _Couleur; }
+            set { _Couleur = value; }
         }
-
-        internal class clsCylindre : clsCercle
+        internal override void Dessine()
         {
-            internal clsCylindre(ushort AX, ushort AY, string ANom, float ARayon, float profondeur)
-            : base(AX, AY, ANom, ARayon)
+
+            if(_SupportDessin is null )
             {
-                profondeur = _profondeur;
+               return;
+
+            }
+            if (_SupportDessin is SupportImprimante_Canon canon)
+            {
+                canon.DebutFigure("Cube", Nom);
+            }
+            int x1 = depart.X;
+            int y1 = depart.Y;
+            int x2 = depart.X + profondeur;
+            int y2 = depart.Y + profondeur;
+
+
+            // Je vérifie que les coordonnées sont dans les limites de la taille de zone de dessin
+            if ((x1 < 0 || y1 < 0) || (x1 > MAX_X || y1 > MAX_Y))
+            {
+
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, "Changement pour une valeur Min 0"));
+                x1 = 0;
+                y1 = 0;
             }
 
-            public float _profondeur;
-
-            public float profondeur
+            if (x2 > MAX_X || y2 > MAX_Y)
             {
-                get { return _profondeur; }
-                set { _profondeur = value; }
+                LogEvents.Instance.PushEvent(new Event(EventType.Alerte, "Le rectangle dépasse les limites maximales du dessin. Changement pour une valeur Max 800 480"));
+                x2 = MAX_X;
+                y2 = MAX_Y;
+            }
+            Console.WriteLine("ClsCube");
+        
+            _ = _SupportDessin.Couleur_Selectionne(CColor);
+            _ = _SupportDessin.Ligne_Trace(x1, y1, x2, y1); // haut
+            _ = _SupportDessin.Ligne_Trace(x2, y1, x2, y2); // droite
+            _ = _SupportDessin.Ligne_Trace(x2, y2, x1, y2); // bas
+            _ = _SupportDessin.Ligne_Trace(x1, y2, x1, y1); // gauche
+
+            Event @event = new Event(EventType.Information, $"Dessin du cube \"{Nom}\" effectué.");
+
+            if (@event != null)
+            {
+                LogEvents.Instance.PushEvent(@event);
             }
         }
+
+        internal override void Zoom(float ACoeffX, float ACoeffY = 1)
+        {
+            Console.WriteLine($"-- clsCube.Zoom(CoeffX ={ACoeffX} CoeffY={ACoeffY} \"{Nom} ) ");
+
+            if (ACoeffX < 0.0f)
+
+                ACoeffX = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée."));
+
+
+
+            if (ACoeffY < 0.0f)
+
+                ACoeffY = 1.0f; // Coeff négatif non accepté
+            LogEvents.Instance.PushEvent(new Event(EventType.Information, "Coefficient de zoom négatif pour Y. Valeur par défaut 1.0 utilisée."));
+
+
+
+
+            profondeur = (ushort)(profondeur * ACoeffX);
+
+            Dessine();
+        }
+
+        public override string ToString()
+
+        {
+
+            return $"Cube \"{Nom}\": X={depart.X} Y={depart.Y}  Color={Couleur} L={profondeur}";
+
+        }
+
 
     }
+   
+ 
 }
-

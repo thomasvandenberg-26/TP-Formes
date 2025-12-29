@@ -1,0 +1,73 @@
+ public class clsCercle : clsFigures
+ {
+     // Par manque de temps je ne gère pas le tracé du cercle ni du cylindre avec l’interface de dessin
+     public clsCercle(Point depart, Color AColor, string ANom, ushort ARayon)
+         : base(depart,AColor,  ANom)
+     {
+         CColor = AColor;
+         Rayon = ARayon;
+
+     }
+     public ushort _Rayon;
+
+     public ushort Rayon
+     {
+         get { return _Rayon; }
+         set { _Rayon = value; }
+     }
+
+     public Color CColor
+     {
+         get { return _Couleur; }
+         set { _Couleur = value; }
+     }   
+     internal override void Dessine()
+     {   
+         if(_SupportDessin is null)
+         {
+             return;
+         }
+         if (_SupportDessin is SupportImprimante_Canon canon)
+         {
+             canon.DebutFigure("Cube", Nom);
+         }
+
+
+         Console.WriteLine($"--- clsCercle.Dessine(X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon} \"{Nom}\")");
+
+         //Console.WriteLine($"    (C={Couleur})");
+
+     }
+
+     override internal void Zoom(float ACoeffX, float ACoeffY = 1.0f)
+
+     {
+
+         // Expansion Largeur & Hauteur
+
+         Console.WriteLine($"clsCercle.Zoom(CoeffX={ACoeffX} CoeffX={ACoeffY} \"{Nom}\")");
+
+
+
+         if (ACoeffX < 0.0f)
+
+             ACoeffX = 1.0f; // Coeff négatif non accepté
+         LogEvents.Instance.PushEvent(new Event( EventType.Information, "Coefficient de zoom négatif pour X. Valeur par défaut 1.0 utilisée."));
+
+
+         Rayon = (ushort)(Rayon * ACoeffX); // Calcul nouvelle Rayon
+
+
+
+         Dessine();// Redessine figure
+
+     }
+
+     public override string ToString()
+
+     {
+
+         return $"Cercle \"{Nom}\": X={depart.X} Y={depart.Y} Color={Couleur} R={Rayon}";
+
+     }
+ }

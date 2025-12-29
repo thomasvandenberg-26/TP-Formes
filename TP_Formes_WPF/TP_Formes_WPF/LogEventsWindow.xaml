@@ -1,0 +1,19 @@
+﻿<Window x:Class="TP_Formes_WPF.LogEventsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Monitoring LogEvents" Width="800" Height="450">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Events en temps réel" FontSize="18" FontWeight="Bold" />
+
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding Events}"
+                 FontFamily="Consolas"
+                 FontSize="14"/>
+    </Grid>
+</Window>
