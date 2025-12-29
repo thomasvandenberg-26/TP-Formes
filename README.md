@@ -4,4 +4,8 @@ Voici la version de rendu du TP, je n'ai pas pu aller totalement au bout il rest
 
 Je dois partir aujourd'hui pour fêter la nouvelle année dans un camp de 4 jours, je reviendrais peut être sur le TP après pour finir complétement.
 
-Merci avance de ta compréhension.
+Merci par avance de ta compréhension.
+
+Belle fêtes de fin de d'année
+
+Thomas
